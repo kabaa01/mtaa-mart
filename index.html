@@ -7,537 +7,558 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Mtaa Mart">
-<meta name="description" content="RA-governed community bulk buying cooperative for Kenyan estates">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <title>Mtaa Mart — Community Enterprise</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root{
-  --green:#1A5E36;--green-mid:#2E7D52;--green-light:#C8E6C9;--green-pale:#E8F5E9;
-  --gold:#F9A825;--gold-light:#FFF9C4;--orange:#E65100;--red:#C62828;
-  --blue:#1565C0;--blue-pale:#E3F2FD;--purple:#6A1B9A;
-  --bg:#f5f5f5;--surface:#ffffff;--surface2:#fafafa;
-  --text:#1C1C1C;--text2:#555;--text3:#888;
-  --border:#e0e0e0;--border2:#ccc;
-  --radius:10px;--radius-sm:6px;--shadow:0 1px 4px rgba(0,0,0,.08);
+  --g:#1A5E36;--gm:#2E7D52;--gl:#C8E6C9;--gp:#E8F5E9;
+  --gold:#F9A825;--gdl:#FFF9C4;--or:#E65100;--red:#C62828;
+  --bl:#1565C0;--blp:#E3F2FD;--pu:#6A1B9A;
+  --bg:#f4f4f4;--sf:#fff;--sf2:#f8f8f8;
+  --tx:#1C1C1C;--tx2:#555;--tx3:#999;
+  --bd:#e0e0e0;--bd2:#ccc;--r:10px;--r2:6px;
 }
 @media(prefers-color-scheme:dark){
-  :root{--bg:#121212;--surface:#1e1e1e;--surface2:#252525;--text:#f0f0f0;--text2:#aaa;--text3:#666;--border:#333;--border2:#444}
+  :root{--bg:#111;--sf:#1e1e1e;--sf2:#242424;--tx:#eee;--tx2:#aaa;--tx3:#666;--bd:#2e2e2e;--bd2:#444}
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.5}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.5}
 /* TOPBAR */
-#topbar{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--green);color:#fff;
-  display:flex;align-items:center;gap:0;padding:0 0 0 1rem;height:56px;
-  padding-top:env(safe-area-inset-top)}
-#topbar .logo{font-size:17px;font-weight:600;color:#F9A825;flex:1}
-#topbar .logo span{font-size:12px;color:#C8E6C9;font-weight:400;display:block;margin-top:-2px}
-.topbar-btn{width:48px;height:56px;display:flex;align-items:center;justify-content:center;background:none;border:none;color:#fff;cursor:pointer;font-size:18px}
+#topbar{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--g);height:54px;
+  padding-top:env(safe-area-inset-top);display:flex;align-items:center;padding:0 4px 0 14px}
+.tlogo{font-size:17px;font-weight:700;color:var(--gold);flex:1}
+.tlogo small{font-size:11px;color:var(--gl);font-weight:400;display:block;margin-top:-2px}
+.tibtn{width:44px;height:54px;background:none;border:none;color:#fff;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center}
 /* BOTTOM NAV */
-#botnav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--surface);
-  border-top:1px solid var(--border);display:flex;
-  padding-bottom:env(safe-area-inset-bottom)}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:8px 0 6px;cursor:pointer;border:none;background:none;color:var(--text3);font-size:10px;gap:3px;transition:color .15s}
-.nav-item svg{width:22px;height:22px}
-.nav-item.active{color:var(--green)}
-.nav-item.active svg path,.nav-item.active svg rect,.nav-item.active svg circle{fill:var(--green)}
-/* PAGES */
-#app{position:fixed;top:56px;left:0;right:0;bottom:60px;overflow:hidden}
-.page{position:absolute;inset:0;overflow-y:auto;display:none;padding-bottom:1rem;
-  -webkit-overflow-scrolling:touch}
-.page.active{display:block}
-.page-inner{max-width:680px;margin:0 auto;padding:1rem}
-/* CARDS */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
-  padding:1rem;margin-bottom:.75rem;box-shadow:var(--shadow)}
-.card-hd{font-size:13px;font-weight:600;color:var(--text2);text-transform:uppercase;
-  letter-spacing:.06em;margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
-.card-hd::after{content:'';flex:1;height:1px;background:var(--border)}
-/* SECTION BANNER */
-.banner{background:var(--green);color:#fff;padding:.7rem 1rem;border-radius:var(--radius) var(--radius) 0 0;
-  margin:-1rem -1rem .75rem;font-size:13px;font-weight:600;display:flex;align-items:center;gap:.5rem}
+#botnav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--sf);border-top:1px solid var(--bd);
+  display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:env(safe-area-inset-bottom)}
+.ni{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:7px 0 5px;
+  border:none;background:none;color:var(--tx3);font-size:10px;gap:2px;cursor:pointer;transition:color .15s}
+.ni svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ni.on{color:var(--g)}
+/* DRAWER */
+#drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:300}
+#drawer{position:fixed;right:0;top:0;bottom:0;width:260px;background:var(--sf);z-index:301;
+  transform:translateX(100%);transition:transform .25s;padding-top:env(safe-area-inset-top);
+  display:flex;flex-direction:column}
+#drawer.open{transform:translateX(0)}
+#drawer-overlay.open{display:block}
+.drawer-hd{background:var(--g);padding:1rem 1rem .75rem;color:#fff}
+.drawer-title{font-size:16px;font-weight:700;color:var(--gold)}
+.drawer-sub{font-size:11px;color:var(--gl);margin-top:2px}
+.drawer-item{display:flex;align-items:center;gap:.75rem;padding:.8rem 1rem;border-bottom:1px solid var(--bd);
+  cursor:pointer;font-size:14px;background:none;border-left:none;border-right:none;border-top:none;
+  color:var(--tx);width:100%;text-align:left;transition:background .12s}
+.drawer-item:hover{background:var(--sf2)}
+.drawer-item.on{color:var(--g);font-weight:600}
+.drawer-icon{font-size:18px;width:28px;text-align:center}
+/* APP SHELL */
+#app{position:fixed;top:54px;left:0;right:0;bottom:60px;overflow:hidden}
+.pg{position:absolute;inset:0;overflow-y:auto;display:none;-webkit-overflow-scrolling:touch}
+.pg.on{display:block}
+.pi{max-width:700px;margin:0 auto;padding:.75rem .75rem 1.5rem}
+/* COMMON COMPONENTS */
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:.9rem;margin-bottom:.7rem}
+.card-hd{font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.07em;
+  margin-bottom:.65rem;display:flex;align-items:center;gap:.4rem}
+.card-hd::after{content:'';flex:1;height:1px;background:var(--bd)}
+.banner{background:var(--g);color:#fff;padding:.55rem .9rem;border-radius:var(--r) var(--r) 0 0;
+  margin:-0.9rem -0.9rem .75rem;font-size:12px;font-weight:700;display:flex;align-items:center;gap:.4rem}
 .banner.gold{background:var(--gold);color:#333}
-.banner.orange{background:var(--orange)}
-/* FORM ELEMENTS */
-label.form-label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px;margin-top:.75rem}
-input[type=text],input[type=tel],input[type=number],input[type=email],select,textarea{
-  width:100%;padding:9px 12px;font-size:14px;border:1px solid var(--border2);
-  border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);
-  font-family:inherit;transition:border-color .15s}
-input:focus,select:focus,textarea:focus{outline:none;border-color:var(--green)}
-textarea{resize:vertical;min-height:72px}
-input[type=range]{width:100%;accent-color:var(--green)}
+.banner.orange{background:var(--or)}
+.banner.blue{background:var(--bl)}
+/* FORMS */
+.fl{font-size:12px;color:var(--tx2);display:block;margin:.6rem 0 3px}
+input[type=text],input[type=tel],input[type=number],input[type=email],input[type=password],select,textarea{
+  width:100%;padding:8px 10px;font-size:14px;border:1px solid var(--bd2);border-radius:var(--r2);
+  background:var(--sf2);color:var(--tx);font-family:inherit;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--g)}
+textarea{resize:vertical;min-height:64px}
+input[type=range]{width:100%;accent-color:var(--g);cursor:pointer}
+input[type=checkbox]{accent-color:var(--g);width:16px;height:16px;cursor:pointer;flex-shrink:0}
 /* BUTTONS */
-.btn{padding:10px 18px;font-size:14px;font-weight:500;border-radius:var(--radius-sm);
-  cursor:pointer;border:1px solid var(--border2);background:var(--surface2);
-  color:var(--text);transition:all .15s;font-family:inherit}
+.btn{padding:9px 16px;font-size:13px;font-weight:600;border-radius:var(--r2);cursor:pointer;
+  border:1px solid var(--bd2);background:var(--sf2);color:var(--tx);font-family:inherit;transition:all .15s}
 .btn:active{transform:scale(.97)}
-.btn-primary{background:var(--green);color:#fff;border-color:var(--green)}
-.btn-primary:hover{background:var(--green-mid)}
-.btn-gold{background:var(--gold);color:#333;border-color:var(--gold)}
-.btn-danger{background:var(--red);color:#fff;border-color:var(--red)}
-.btn-sm{padding:6px 12px;font-size:12px}
-.btn-block{width:100%;margin-top:.5rem}
-.btn-row{display:flex;gap:.5rem;margin-top:.75rem}
+.bp{background:var(--g);color:#fff;border-color:var(--g)}
+.bp:hover{background:var(--gm)}
+.bg{background:var(--gold);color:#333;border-color:var(--gold)}
+.bd-{background:var(--red);color:#fff;border-color:var(--red)}
+.bsm{padding:5px 11px;font-size:12px}
+.bbl{width:100%;margin-top:.5rem}
+.brow{display:flex;gap:.5rem;margin-top:.6rem}
 /* CHECK ITEMS */
-.check-grid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem}
-.check-grid.three{grid-template-columns:1fr 1fr 1fr}
-.check-item{display:flex;align-items:center;gap:7px;padding:7px 10px;
-  border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;
-  font-size:13px;color:var(--text);background:var(--surface2);user-select:none;transition:all .12s}
-.check-item:hover{border-color:var(--green-mid)}
-.check-item.on{background:var(--green-pale);border-color:var(--green);color:var(--green)}
-.check-box{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border2);
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s}
-.check-item.on .check-box{background:var(--green);border-color:var(--green);color:#fff}
+.cg2{display:grid;grid-template-columns:1fr 1fr;gap:.35rem}
+.cg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.35rem}
+.ci{display:flex;align-items:center;gap:6px;padding:6px 9px;border:1px solid var(--bd);border-radius:var(--r2);
+  cursor:pointer;font-size:12px;color:var(--tx);background:var(--sf2);user-select:none;transition:all .12s}
+.ci:hover{border-color:var(--gm)}
+.ci.on{background:var(--gp);border-color:var(--g);color:var(--g)}
+.cb{width:15px;height:15px;border-radius:3px;border:1.5px solid var(--bd2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ci.on .cb{background:var(--g);border-color:var(--g)}
 /* METRICS */
-.metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem;margin-bottom:.75rem}
-.metrics.four{grid-template-columns:repeat(4,1fr)}
-.metric{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);
-  padding:.6rem;text-align:center}
-.metric-val{font-size:20px;font-weight:600;color:var(--green)}
-.metric-label{font-size:11px;color:var(--text2);margin-top:2px}
+.mg2{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.7rem}
+.mg4{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:.7rem}
+.m{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r2);padding:.55rem;text-align:center}
+.mv{font-size:18px;font-weight:700;color:var(--g)}
+.ml{font-size:10px;color:var(--tx2);margin-top:1px}
 /* BADGES */
-.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:500}
-.badge-green{background:var(--green-pale);color:var(--green)}
-.badge-gold{background:var(--gold-light);color:var(--orange)}
-.badge-blue{background:var(--blue-pale);color:var(--blue)}
-.badge-red{background:#FFEBEE;color:var(--red)}
+.badge{display:inline-block;padding:2px 7px;border-radius:99px;font-size:11px;font-weight:600}
+.bg-{background:var(--gp);color:var(--g)}
+.bgold{background:var(--gdl);color:var(--or)}
+.bblue{background:var(--blp);color:var(--bl)}
+.bred{background:#FFEBEE;color:var(--red)}
 /* BAR CHART */
-.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;font-size:12px}
-.bar-label{flex:0 0 140px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bar-bg{flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
-.bar-fill{height:100%;background:var(--green);border-radius:4px;transition:width .4s}
-.bar-pct{flex:0 0 35px;text-align:right;color:var(--text2)}
-/* ROWS */
-.list-row{display:flex;align-items:center;gap:.5rem;padding:.6rem 0;border-bottom:1px solid var(--border);font-size:13px}
-.list-row:last-child{border-bottom:none}
-.list-row .name{flex:1;font-weight:500}
+.bar{display:flex;align-items:center;gap:7px;margin-bottom:4px;font-size:12px}
+.blab{flex:0 0 130px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bbg{flex:1;height:7px;background:var(--sf2);border-radius:3px;overflow:hidden;border:1px solid var(--bd)}
+.bfill{height:100%;background:var(--g);border-radius:3px;transition:width .4s}
+.bpct{flex:0 0 30px;text-align:right;color:var(--tx2)}
+/* LIST ROWS */
+.lr{display:flex;align-items:center;gap:.5rem;padding:.55rem 0;border-bottom:1px solid var(--bd);font-size:13px}
+.lr:last-child{border-bottom:none}
+.lrn{flex:1;font-weight:600}
 /* ALERTS */
-.alert{padding:.75rem 1rem;border-radius:var(--radius-sm);font-size:13px;margin-bottom:.75rem;line-height:1.5}
-.alert-info{background:var(--blue-pale);color:var(--blue);border:1px solid #90CAF9}
-.alert-warn{background:var(--gold-light);color:var(--orange);border:1px solid #FFD54F}
-.alert-green{background:var(--green-pale);color:var(--green);border:1px solid var(--green-light)}
-.alert-red{background:#FFEBEE;color:var(--red);border:1px solid #EF9A9A}
-/* INFOGRAPHIC OVERRIDES */
-.ig-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:.75rem;overflow:hidden}
-.ig-section-hd{background:var(--green);color:#fff;padding:.6rem 1rem;font-size:12px;font-weight:600;letter-spacing:.04em}
-.ig-section-hd.gold{background:var(--gold);color:#333}
-.ig-body{padding:.75rem}
-/* STAKE CARD */
-.stake-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
-.stake-card{border-radius:var(--radius-sm);border:1px solid var(--border);overflow:hidden;background:var(--surface2)}
-.stake-top{padding:.5rem .65rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.4rem}
-.stake-ico{font-size:16px}
-.stake-nm{font-size:12px;font-weight:600}
-.stake-rl{font-size:10px;color:var(--text2)}
-.stake-body{padding:.4rem .65rem}
-.stake-act{font-size:11px;color:var(--text2);padding:2px 0;display:flex;gap:4px}
-.stake-act::before{content:'→';color:var(--green);flex-shrink:0}
-.stake-earn{margin-top:.3rem;padding:.25rem .4rem;border-radius:4px;font-size:10px;font-weight:600;background:var(--green-pale);color:var(--green)}
-/* HISA BOXES */
-.hisa-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.4rem}
-.hisa-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.5rem .3rem;text-align:center}
-.hisa-box.highlight{background:var(--green);border-color:var(--green)}
-.hisa-val{font-size:18px;font-weight:700;color:var(--green)}
-.hisa-box.highlight .hisa-val{color:var(--gold)}
-.hisa-desc{font-size:10px;color:var(--text2);margin-top:2px;line-height:1.3}
-.hisa-box.highlight .hisa-desc{color:var(--green-light)}
-/* CYCLE STEPS */
-.cycle-row{display:flex;gap:0;overflow-x:auto}
-.cycle-step{flex:1;min-width:80px;text-align:center;padding:.4rem .3rem;position:relative}
-.cycle-num{width:24px;height:24px;border-radius:50%;background:var(--green);color:var(--gold);
-  font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto .3rem}
-.cycle-day{font-size:11px;font-weight:600;color:var(--text)}
-.cycle-desc{font-size:10px;color:var(--text2);line-height:1.3}
-.cycle-step:not(:last-child)::after{content:'→';position:absolute;right:-8px;top:8px;font-size:12px;color:var(--green-mid)}
-/* MONEY ROW */
-.money-flow{display:flex;align-items:center;gap:4px;overflow-x:auto}
-.money-node{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);
-  padding:.5rem .4rem;text-align:center;flex:1;min-width:70px}
-.money-node .mv{font-size:13px;font-weight:700;color:var(--green)}
-.money-node .ml{font-size:10px;color:var(--text2)}
-.money-node.neg .mv{color:var(--red)}
-.money-arr{font-size:14px;color:var(--text3);flex-shrink:0}
-/* SCALE */
-.scale-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
-.scale-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.5rem .6rem}
-.scale-phase{font-size:10px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2rem}
-.scale-num{font-size:18px;font-weight:700;color:var(--text)}
-.scale-sub{font-size:10px;color:var(--text2)}
-.scale-items{margin-top:.4rem}
-.scale-item{font-size:10px;color:var(--text2);padding:1px 0;display:flex;gap:4px}
-.scale-item::before{content:'·';color:var(--green);font-size:14px;line-height:1}
-/* MODAL */
-#modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;
-  align-items:flex-end;justify-content:center}
-#modal-overlay.open{display:flex}
-#modal{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;
-  width:100%;max-width:680px;max-height:90vh;overflow-y:auto;padding:1.25rem;
-  padding-bottom:calc(1.25rem + env(safe-area-inset-bottom))}
-#modal-title{font-size:16px;font-weight:600;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between}
+.al{padding:.65rem .85rem;border-radius:var(--r2);font-size:12px;margin-bottom:.65rem;line-height:1.5}
+.ali{background:var(--blp);color:var(--bl);border:1px solid #90CAF9}
+.alw{background:var(--gdl);color:var(--or);border:1px solid #FFD54F}
+.alg{background:var(--gp);color:var(--g);border:1px solid var(--gl)}
+.alr{background:#FFEBEE;color:var(--red);border:1px solid #EF9A9A}
+/* ACCORDION */
+.acc-item{border:1px solid var(--bd);border-radius:var(--r);margin-bottom:.5rem;overflow:hidden}
+.acc-hd{display:flex;align-items:center;gap:.5rem;padding:.75rem .9rem;cursor:pointer;background:var(--sf);
+  font-size:13px;font-weight:600;border:none;width:100%;text-align:left;color:var(--tx)}
+.acc-hd:hover{background:var(--sf2)}
+.acc-hd .acc-ico{font-size:20px}
+.acc-hd .acc-arr{margin-left:auto;font-size:12px;color:var(--tx3);transition:transform .2s}
+.acc-hd.open .acc-arr{transform:rotate(180deg)}
+.acc-body{display:none;padding:.75rem .9rem;border-top:1px solid var(--bd);background:var(--sf2)}
+.acc-body.open{display:block}
+.acc-sect{margin-bottom:.6rem}
+.acc-sect-title{font-size:11px;font-weight:700;color:var(--g);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem}
+.acc-step{display:flex;gap:.5rem;padding:3px 0;font-size:12px;color:var(--tx2);line-height:1.5}
+.acc-step::before{content:'→';color:var(--g);flex-shrink:0}
+.acc-earn{background:var(--gp);border-radius:var(--r2);padding:.3rem .5rem;font-size:11px;font-weight:700;color:var(--g);margin-top:.35rem;display:inline-block}
+.acc-warn{background:#FFEBEE;border-radius:var(--r2);padding:.3rem .5rem;font-size:11px;font-weight:700;color:var(--red);margin-top:.35rem;display:inline-block}
+/* WORKBOOK SUB-NAV */
+#wb-nav{display:flex;overflow-x:auto;gap:.3rem;padding:.5rem .75rem;background:var(--sf);border-bottom:1px solid var(--bd);
+  position:sticky;top:0;z-index:10;scrollbar-width:none}
+#wb-nav::-webkit-scrollbar{display:none}
+.wbn{padding:5px 12px;border-radius:99px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;
+  border:1px solid var(--bd);background:var(--sf2);color:var(--tx2);transition:all .15s}
+.wbn.on{background:var(--g);color:#fff;border-color:var(--g)}
+.wbs{display:none}
+.wbs.on{display:block}
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{background:var(--g);color:#fff;padding:5px 7px;text-align:left;font-size:11px;white-space:nowrap}
+.tbl td{padding:5px 7px;border-bottom:1px solid var(--bd);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--sf2)}
+.tbl input{padding:3px 5px;font-size:12px;border:1px solid transparent;background:transparent;width:100%;color:var(--tx)}
+.tbl input:focus{border-color:var(--g);background:var(--sf);border-radius:3px;outline:none}
+.tbl-wrap{overflow-x:auto;border-radius:var(--r2);border:1px solid var(--bd)}
+/* HISA EXPLAINER */
+.hbox{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r2);padding:.6rem;text-align:center}
+.hbox.hl{background:var(--g);border-color:var(--g)}
+.hval{font-size:22px;font-weight:700;color:var(--g)}
+.hl .hval{color:var(--gold)}
+.hdesc{font-size:10px;color:var(--tx2);margin-top:2px;line-height:1.3}
+.hl .hdesc{color:var(--gl)}
+.jstep{display:flex;align-items:flex-start;gap:.65rem;padding:.5rem 0;position:relative}
+.jstep:not(:last-child)::after{content:'';position:absolute;left:13px;top:40px;bottom:0;width:2px;background:var(--bd)}
+.jnum{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;flex-shrink:0;position:relative;z-index:1}
+.jdone{background:var(--g);color:var(--gold)}
+.jact{background:var(--gold);color:#333}
+.jfut{background:var(--sf2);color:var(--tx3);border:1.5px dashed var(--bd2)}
+.jtxt .jtitle{font-size:12px;font-weight:700;color:var(--tx)}
+.jtxt .jdesc{font-size:11px;color:var(--tx2);margin-top:1px;line-height:1.4}
+.jtxt .jrew{font-size:10px;font-weight:700;color:var(--g);background:var(--gp);padding:2px 7px;border-radius:99px;display:inline-block;margin-top:3px}
+.jtxt .jrew.co{background:var(--g);color:var(--gold)}
+/* INFOGRAPHIC */
+.ig-s{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:.7rem;overflow:hidden}
+.ig-hd{background:var(--g);color:#fff;padding:.5rem .9rem;font-size:12px;font-weight:700}
+.ig-hd.gold{background:var(--gold);color:#333}
+.ig-b{padding:.75rem}
+.cstep{flex:1;min-width:72px;text-align:center;padding:.3rem .25rem;position:relative}
+.cstep:not(:last-child)::after{content:'›';position:absolute;right:-8px;top:6px;font-size:16px;color:var(--gm)}
+.cnum{width:24px;height:24px;border-radius:50%;background:var(--g);color:var(--gold);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto .25rem}
+.cday{font-size:10px;font-weight:700;color:var(--tx)}
+.cdesc{font-size:9px;color:var(--tx2);line-height:1.3}
+.mn{background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r2);padding:.4rem;text-align:center;flex:1;min-width:60px}
+.mnv{font-size:12px;font-weight:700;color:var(--g)}
+.mn.neg .mnv{color:var(--red)}
+.mnl{font-size:9px;color:var(--tx2)}
+.sk-card{border-radius:var(--r2);border:1px solid var(--bd);overflow:hidden}
+.sk-top{padding:.4rem .55rem;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:.35rem;background:var(--sf2)}
+.sk-b{padding:.35rem .55rem}
+.sk-a{font-size:10px;color:var(--tx2);padding:1px 0;display:flex;gap:3px}
+.sk-a::before{content:'→';color:var(--g);flex-shrink:0}
+.sk-earn{margin-top:.25rem;background:var(--gp);border-radius:3px;padding:2px 5px;font-size:9px;font-weight:700;color:var(--g)}
+/* SUCCESS */
+.success{text-align:center;padding:2rem 1rem}
+.sico{font-size:44px;margin-bottom:.5rem}
+.stitle{font-size:17px;font-weight:700;color:var(--g)}
+.ssub{font-size:13px;color:var(--tx2);margin-top:.25rem}
 /* TOAST */
-#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);
-  background:#333;color:#fff;padding:.6rem 1.2rem;border-radius:99px;font-size:13px;
-  z-index:300;opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap}
+#toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(10px);
+  background:#222;color:#fff;padding:.5rem 1.1rem;border-radius:99px;font-size:13px;
+  z-index:400;opacity:0;transition:all .22s;pointer-events:none;white-space:nowrap;max-width:90vw}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-/* ADMIN */
-.setting-row{display:flex;align-items:center;gap:.5rem;padding:.5rem 0;border-bottom:1px solid var(--border)}
-.setting-row:last-child{border-bottom:none}
-.setting-label{flex:1;font-size:13px}
-.setting-val{width:100px;text-align:right}
-.setting-val input{text-align:right;width:100%}
-/* EXPORT */
-.export-row{display:flex;align-items:center;gap:.5rem;padding:.5rem;border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:.4rem}
-.export-icon{font-size:20px}
-.export-info{flex:1}
-.export-title{font-size:13px;font-weight:600}
-.export-desc{font-size:11px;color:var(--text2)}
-/* PRODUCT TABLE */
-.prod-row{display:grid;grid-template-columns:1fr 80px 80px 80px 30px;gap:.3rem;align-items:center;
-  padding:.4rem 0;border-bottom:1px solid var(--border);font-size:12px}
-.prod-row:last-child{border-bottom:none}
-.prod-hd{font-weight:600;color:var(--text2);font-size:11px}
-/* UTIL */
-.mt{margin-top:.75rem}
-.muted{color:var(--text2);font-size:13px}
+/* INSTALL */
+#ibar{display:none;position:fixed;top:54px;left:0;right:0;z-index:150;background:var(--gold);
+  color:#333;padding:.5rem .9rem;font-size:12px;font-weight:600;align-items:center;gap:.5rem}
+#ibar.show{display:flex}
+.divider{border:none;border-top:1px solid var(--bd);margin:.65rem 0}
+.muted{color:var(--tx2);font-size:12px}
 .center{text-align:center}
 .flex{display:flex;align-items:center;gap:.5rem}
-.spacer{flex:1}
-.divider{border:none;border-top:1px solid var(--border);margin:.75rem 0}
-.success-screen{text-align:center;padding:2rem 1rem}
-.success-icon{font-size:48px;margin-bottom:.5rem}
-.success-title{font-size:18px;font-weight:600;color:var(--green)}
-.success-sub{font-size:14px;color:var(--text2);margin-top:.3rem}
-/* PWA install */
-#install-bar{display:none;position:fixed;top:56px;left:0;right:0;z-index:99;
-  background:var(--gold);color:#333;padding:.6rem 1rem;font-size:13px;font-weight:500;
-  display:flex;align-items:center;gap:.5rem}
-#install-bar.hidden{display:none!important}
-/* Scrollbar */
-::-webkit-scrollbar{width:4px;height:4px}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.sp{flex:1}
 </style>
 </head>
 <body>
 
 <!-- TOP BAR -->
 <div id="topbar">
-  <div class="logo">Mtaa Mart <span id="estate-name-display">Community Enterprise</span></div>
-  <button class="topbar-btn" onclick="openAdmin()" title="Admin settings">⚙️</button>
+  <div class="tlogo">Mtaa Mart <small id="en-display">Community Enterprise</small></div>
+  <button class="tibtn" onclick="toggleDrawer()" aria-label="Menu">☰</button>
 </div>
 
 <!-- INSTALL BAR -->
-<div id="install-bar" class="hidden">
-  <span>📲</span>
-  <span style="flex:1">Install Mtaa Mart for offline use</span>
-  <button class="btn btn-sm" id="install-btn" style="background:#333;color:#fff;border-color:#333">Install</button>
-  <button class="topbar-btn" style="color:#333;width:32px" onclick="document.getElementById('install-bar').classList.add('hidden')">✕</button>
+<div id="ibar">
+  <span>📲</span><span style="flex:1">Install for offline use</span>
+  <button class="btn bsm bp" id="ibtn">Install</button>
+  <button class="tibtn" style="color:#333;width:36px;height:36px" onclick="document.getElementById('ibar').classList.remove('show')">✕</button>
 </div>
 
-<!-- APP SHELL -->
+<!-- DRAWER OVERLAY -->
+<div id="drawer-overlay" onclick="toggleDrawer()"></div>
+<div id="drawer">
+  <div class="drawer-hd">
+    <div class="drawer-title">Mtaa Mart</div>
+    <div class="drawer-sub" id="drawer-estate">Community Enterprise</div>
+  </div>
+  <button class="drawer-item" onclick="goTo('survey');toggleDrawer()"><span class="drawer-icon">📝</span>Anonymous Survey</button>
+  <button class="drawer-item" onclick="goTo('signup');toggleDrawer()"><span class="drawer-icon">🤝</span>Stakeholder Sign-up</button>
+  <button class="drawer-item" onclick="goTo('results');toggleDrawer()"><span class="drawer-icon">📊</span>Live Results</button>
+  <button class="drawer-item" onclick="goTo('admin');toggleDrawer()"><span class="drawer-icon">⚙️</span>Admin (Committee)</button>
+  <div style="padding:.75rem 1rem;font-size:11px;color:var(--tx3);margin-top:auto;border-top:1px solid var(--bd)">
+    Governed by the Co-operatives Act, Kenya<br>Not an MLM · Zero joining fee
+  </div>
+</div>
+
+<!-- APP -->
 <div id="app">
 
-<!-- PAGE: INFOGRAPHIC -->
-<div class="page active" id="page-infographic">
-<div class="page-inner">
+<!-- ═══ PAGE: HOME / INFOGRAPHIC ═══ -->
+<div class="pg on" id="pg-home">
+<div class="pi">
 
-  <div class="ig-section">
-    <div class="ig-section-hd">🔄 Weekly engine</div>
-    <div class="ig-body">
-      <div class="cycle-row" id="cycle-row"></div>
+  <div style="background:var(--g);border-radius:var(--r);padding:1.1rem;text-align:center;margin-bottom:.7rem">
+    <div style="font-size:24px;font-weight:800;color:var(--gold)">MTAA MART</div>
+    <div style="font-size:12px;color:var(--gl);margin-top:3px" id="ig-tagline">How the community enterprise works — for everyone</div>
+    <div style="font-size:10px;color:#81C784;margin-top:4px;letter-spacing:.05em">ZERO CAPITAL · RA-GOVERNED · NOT AN MLM</div>
+  </div>
+
+  <div class="ig-s">
+    <div class="ig-hd">🔄 Weekly engine</div>
+    <div class="ig-b"><div style="display:flex;overflow-x:auto;gap:0" id="ig-cycle"></div></div>
+  </div>
+
+  <div class="ig-s">
+    <div class="ig-hd">💸 Money flow every week</div>
+    <div class="ig-b">
+      <div style="display:flex;align-items:center;gap:4px;overflow-x:auto" id="ig-money"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.4rem;margin-top:.5rem" id="ig-money2"></div>
     </div>
   </div>
 
-  <div class="ig-section">
-    <div class="ig-section-hd">💸 How money flows every week</div>
-    <div class="ig-body">
-      <div class="money-flow" id="money-flow"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.4rem;margin-top:.6rem" id="money-summary"></div>
+  <div class="ig-s">
+    <div class="ig-hd">👥 8 stakeholders</div>
+    <div class="ig-b"><div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem" id="ig-stakes"></div></div>
+  </div>
+
+  <div class="ig-s">
+    <div class="ig-hd gold">⭐ Hisa system — earn your ownership</div>
+    <div class="ig-b">
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:.3rem" id="ig-hisa"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.35rem;margin-top:.5rem" id="ig-hisa2"></div>
     </div>
   </div>
 
-  <div class="ig-section">
-    <div class="ig-section-hd">👥 8 stakeholders — who does what</div>
-    <div class="ig-body">
-      <div class="stake-grid" id="stake-grid"></div>
-    </div>
+  <div class="ig-s">
+    <div class="ig-hd">📈 Scale path</div>
+    <div class="ig-b"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.4rem" id="ig-scale"></div></div>
   </div>
 
-  <div class="ig-section">
-    <div class="ig-section-hd gold">⭐ Hisa (co-ownership) system</div>
-    <div class="ig-body">
-      <div class="hisa-grid" id="hisa-grid"></div>
-      <div style="margin-top:.6rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:.4rem" id="hisa-status"></div>
-    </div>
+  <div class="ig-s">
+    <div class="ig-hd">🛡️ Why Kenyans will trust this</div>
+    <div class="ig-b"><div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem" id="ig-trust"></div></div>
   </div>
 
-  <div class="ig-section">
-    <div class="ig-section-hd">📈 The scale path</div>
-    <div class="ig-body">
-      <div class="scale-grid" id="scale-grid"></div>
-    </div>
+  <div style="background:var(--g);border-radius:var(--r);padding:.65rem;text-align:center">
+    <div style="font-size:12px;color:var(--gl)">Governed by the Co-operatives Act · Paybill: <span id="ig-paybill">-</span></div>
   </div>
-
-  <div class="ig-section">
-    <div class="ig-section-hd">🛡️ Why Kenyans will trust this</div>
-    <div class="ig-body" id="trust-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem"></div>
-  </div>
-
-  <div class="card" style="background:var(--green);color:#fff;text-align:center">
-    <div style="font-size:13px;color:var(--green-light)">Mtaa Mart · Governed by the Co-operatives Act, Kenya</div>
-    <div style="font-size:11px;color:#81C784;margin-top:3px">Zero capital · RA-governed · Not an MLM</div>
-  </div>
-
 </div>
 </div>
 
-<!-- PAGE: SURVEY -->
-<div class="page" id="page-survey">
-<div class="page-inner">
-  <div id="survey-form-wrap">
-    <div class="alert alert-info">Your responses are <strong>anonymous</strong>. No name or phone collected here. Results go to the RA committee for supplier negotiations.</div>
+<!-- ═══ PAGE: HISA EXPLAINER ═══ -->
+<div class="pg" id="pg-hisa">
+<div class="pi">
 
-    <div class="card">
-      <div class="banner">🏠 Your household</div>
-      <label class="form-label">Household size</label>
-      <select id="sv-size"><option value="">Select...</option>
-        <option>1 person</option><option>2 people</option><option>3–4 people</option>
-        <option>5–6 people</option><option>7+ people</option>
-      </select>
-      <label class="form-label">Monthly grocery budget (Ksh)</label>
-      <select id="sv-budget"><option value="">Select...</option>
-        <option>Under 3,000</option><option>3,000–6,000</option><option>6,000–10,000</option>
-        <option>10,000–15,000</option><option>15,000+</option>
-      </select>
-    </div>
-
-    <div class="card">
-      <div class="banner">🛒 Tick everything you buy regularly</div>
-      <div id="sv-products" class="check-grid three" style="margin-bottom:.5rem"></div>
-    </div>
-
-    <div class="card">
-      <div class="banner">⚡ Services you spend on regularly</div>
-      <div id="sv-services" class="check-grid"></div>
-    </div>
-
-    <div class="card">
-      <div class="banner gold">⛽ Cooking gas</div>
-      <label class="form-label">Cylinder size</label>
-      <select id="sv-gas"><option value="">Not applicable</option>
-        <option>3kg (small)</option><option>6kg (medium)</option><option>13kg (large)</option>
-      </select>
-      <label class="form-label">Refills per month: <strong id="sv-gas-val">1</strong></label>
-      <input type="range" min="0" max="6" value="1" step="1" id="sv-gas-refills"
-        oninput="document.getElementById('sv-gas-val').textContent=this.value">
-    </div>
-
-    <div class="card">
-      <div class="banner">💡 What else should we bulk-buy?</div>
-      <textarea id="sv-other" placeholder="e.g. baby diapers, animal feed, school stationery, charcoal…"></textarea>
-    </div>
-
-    <div class="btn-row">
-      <button class="btn" onclick="clearSurvey()">Clear</button>
-      <button class="btn btn-primary" style="flex:1" onclick="submitSurvey()">Submit anonymously</button>
-    </div>
+  <div style="background:var(--g);border-radius:var(--r);padding:1.2rem;text-align:center;margin-bottom:.7rem">
+    <div style="font-size:44px;font-weight:800;color:var(--gold);letter-spacing:-.01em">HISA</div>
+    <div style="font-size:14px;color:var(--gl);margin-top:.2rem">Swahili for <em>Share</em> — your slice of the pie</div>
+    <div style="font-size:12px;color:#81C784;margin-top:.5rem;line-height:1.6">When you help Mtaa Mart grow, you earn Hisa.<br>Reach 10 and you become a <strong style="color:var(--gold)">Co-Owner</strong> with a real dividend.</div>
   </div>
 
-  <div id="survey-thanks" style="display:none">
-    <div class="success-screen">
-      <div class="success-icon">✅</div>
-      <div class="success-title">Response recorded</div>
-      <div class="success-sub">Your data has been added to the community results.</div>
-      <div class="btn-row" style="justify-content:center;margin-top:1rem">
-        <button class="btn" onclick="anotherSurvey()">Submit another</button>
-        <button class="btn btn-primary" onclick="goTo('results')">See results</button>
+  <div class="card">
+    <div class="card-hd">Think of it like...</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem">
+      <div style="text-align:center;padding:.6rem .4rem;background:var(--sf2);border-radius:var(--r2);border:1px solid var(--bd)">
+        <div style="font-size:26px">🌾</div>
+        <div style="font-size:11px;font-weight:700;margin:.2rem 0">A shamba</div>
+        <div style="font-size:10px;color:var(--tx2);line-height:1.4">Labour → bigger harvest share</div>
+      </div>
+      <div style="text-align:center;padding:.6rem .4rem;background:var(--sf2);border-radius:var(--r2);border:1px solid var(--bd)">
+        <div style="font-size:26px">🏦</div>
+        <div style="font-size:11px;font-weight:700;margin:.2rem 0">A SACCO share</div>
+        <div style="font-size:10px;color:var(--tx2);line-height:1.4">Action → ownership (not money)</div>
+      </div>
+      <div style="text-align:center;padding:.6rem .4rem;background:var(--sf2);border-radius:var(--r2);border:1px solid var(--bd)">
+        <div style="font-size:26px">🍞</div>
+        <div style="font-size:11px;font-weight:700;margin:.2rem 0">Baking together</div>
+        <div style="font-size:10px;color:var(--tx2);line-height:1.4">Contribute → share the bread</div>
       </div>
     </div>
   </div>
+
+  <div class="card">
+    <div class="card-hd">4 ways to earn Hisa</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem" id="hisa-earn-cards"></div>
+    <div class="alg" style="margin-top:.6rem;margin-bottom:0;display:flex;align-items:center;gap:.5rem">
+      <span style="font-size:20px">🎯</span>
+      <div style="font-size:12px"><strong>Goal: reach <span id="he-threshold">10</span> Hisa</strong><br>Cross that threshold → Co-Owner status + year-end dividend cheque at every AGM.</div>
+    </div>
+  </div>
+
+  <div class="card" style="background:var(--sf2)">
+    <div class="card-hd">🧮 Calculate your Hisa</div>
+    <div id="sim-rows"></div>
+    <div style="background:var(--g);border-radius:var(--r2);padding:.75rem;text-align:center;margin-top:.65rem">
+      <div style="font-size:26px;font-weight:800;color:var(--gold)" id="sim-total">4 Hisa</div>
+      <div style="font-size:11px;color:var(--gl);margin-top:2px" id="sim-label">6 more to Co-Owner</div>
+      <div style="display:flex;flex-wrap:wrap;gap:.3rem;justify-content:center;margin-top:.4rem" id="sim-pills"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">🗺️ The journey — stranger to co-owner</div>
+    <div id="hisa-journey"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">🛡️ Hisa vs MLM — the key difference</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">
+      <div style="background:#FFEBEE;border:1px solid #EF9A9A;border-radius:var(--r2);padding:.6rem">
+        <div style="font-size:11px;font-weight:800;color:var(--red);margin-bottom:.3rem">❌ MLM scheme</div>
+        <div style="font-size:11px;color:var(--tx);line-height:1.7">→ Pay to join<br>→ Earn by recruiting<br>→ Money flows up<br>→ Most people lose</div>
+      </div>
+      <div style="background:var(--gp);border:1px solid var(--gl);border-radius:var(--r2);padding:.6rem">
+        <div style="font-size:11px;font-weight:800;color:var(--g);margin-bottom:.3rem">✅ Hisa system</div>
+        <div style="font-size:11px;color:var(--tx);line-height:1.7">→ Zero joining fee<br>→ Earn by buying<br>→ Money stays local<br>→ Everyone benefits</div>
+      </div>
+    </div>
+    <div style="border-left:3px solid var(--g);padding:.4rem .6rem;background:var(--sf2);border-radius:0 var(--r2) var(--r2) 0;font-size:12px;font-style:italic;color:var(--tx2);margin-top:.5rem;line-height:1.6">
+      "In an MLM, your recruits make you rich. In Hisa, your community makes everyone richer — including you."
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">📜 This idea is older than money</div>
+    <div style="display:flex;flex-direction:column;gap:.4rem">
+      <div style="display:flex;gap:.5rem;padding:.5rem;background:var(--sf2);border-radius:var(--r2)"><span style="font-size:16px">🌍</span><div><div style="font-size:11px;font-weight:700">Harambee — Kenya's founding philosophy</div><div style="font-size:10px;color:var(--tx2);line-height:1.4">Jomo Kenyatta built schools and hospitals because every contributor had a claim on what they helped build. That is Hisa.</div></div></div>
+      <div style="display:flex;gap:.5rem;padding:.5rem;background:var(--sf2);border-radius:var(--r2)"><span style="font-size:16px">🤝</span><div><div style="font-size:11px;font-weight:700">Mwethya · Ikundi · Busaa circles</div><div style="font-size:10px;color:var(--tx2);line-height:1.4">Akamba, Kikuyu and Luo communities ran cooperative systems for centuries: contribute and you have a claim.</div></div></div>
+      <div style="display:flex;gap:.5rem;padding:.5rem;background:var(--sf2);border-radius:var(--r2)"><span style="font-size:16px">📖</span><div><div style="font-size:11px;font-weight:700">Acts 2:44 — the first co-operative</div><div style="font-size:10px;color:var(--tx2);line-height:1.4">The early church pooled resources. It spread across the Roman Empire because every member had a stake in its survival.</div></div></div>
+      <div style="display:flex;gap:.5rem;padding:.5rem;background:var(--sf2);border-radius:var(--r2)"><span style="font-size:16px">🏭</span><div><div style="font-size:11px;font-weight:700">Mondragon, Spain — 1956 to today</div><div style="font-size:10px;color:var(--tx2);line-height:1.4">One priest, five workers, no capital. Workers earned shares through labour. Today: 80,000 employee-owners, €12 billion revenue.</div></div></div>
+    </div>
+  </div>
+
+  <div style="background:var(--g);border-radius:var(--r);padding:.75rem;text-align:center">
+    <div style="font-size:14px;font-weight:700;color:var(--gold)">Your Hisa is yours. It cannot be taken away.</div>
+    <div style="font-size:11px;color:var(--gl);margin-top:3px">It sits in the register. It earns a dividend at every AGM. It is your name on the wall.</div>
+  </div>
 </div>
 </div>
 
-<!-- PAGE: SIGN-UP -->
-<div class="page" id="page-signup">
-<div class="page-inner">
-  <div id="signup-form-wrap">
-    <div class="alert alert-warn">This sheet is <strong>not anonymous</strong>. Your name and contact will be seen by the RA committee only and used to coordinate your participation.</div>
+<!-- ═══ PAGE: MANUALS ═══ -->
+<div class="pg" id="pg-manuals">
+<div class="pi">
+  <div class="al ali">Tap any role to expand the full one-page instruction manual. Share the relevant card with each stakeholder.</div>
+  <div id="manuals-list"></div>
+</div>
+</div>
 
+<!-- ═══ PAGE: WORKBOOK ═══ -->
+<div class="pg" id="pg-workbook">
+  <div id="wb-nav"></div>
+  <div class="pi" style="padding-top:.5rem">
+    <div id="wb-dashboard" class="wbs on"></div>
+    <div id="wb-members" class="wbs"></div>
+    <div id="wb-orders" class="wbs"></div>
+    <div id="wb-delivery" class="wbs"></div>
+    <div id="wb-pl" class="wbs"></div>
+    <div id="wb-hisa" class="wbs"></div>
+    <div id="wb-dividend" class="wbs"></div>
+    <div id="wb-nodes" class="wbs"></div>
+  </div>
+</div>
+
+<!-- ═══ PAGE: SURVEY ═══ -->
+<div class="pg" id="pg-survey">
+<div class="pi">
+  <div id="sv-form">
+    <div class="al ali">Your responses are <strong>anonymous</strong>. No name or phone collected. Results support supplier negotiations.</div>
+    <div class="card">
+      <div class="banner">🏠 Your household</div>
+      <label class="fl">Household size</label>
+      <select id="sv-size"><option value="">Select...</option><option>1 person</option><option>2 people</option><option>3–4 people</option><option>5–6 people</option><option>7+ people</option></select>
+      <label class="fl">Monthly grocery budget (Ksh)</label>
+      <select id="sv-budget"><option value="">Select...</option><option>Under 3,000</option><option>3,000–6,000</option><option>6,000–10,000</option><option>10,000–15,000</option><option>15,000+</option></select>
+    </div>
+    <div class="card">
+      <div class="banner">🛒 Tick everything you buy regularly</div>
+      <div id="sv-products" class="cg3"></div>
+    </div>
+    <div class="card">
+      <div class="banner">⚡ Services you spend on</div>
+      <div id="sv-services" class="cg2"></div>
+    </div>
+    <div class="card">
+      <div class="banner gold">⛽ Cooking gas</div>
+      <label class="fl">Cylinder size</label>
+      <select id="sv-gas"><option value="">Not applicable</option><option>3kg (small)</option><option>6kg (medium)</option><option>13kg (large)</option></select>
+      <label class="fl">Refills per month: <strong id="sv-gv">1</strong></label>
+      <input type="range" min="0" max="6" value="1" step="1" id="sv-gr" oninput="document.getElementById('sv-gv').textContent=this.value">
+    </div>
+    <div class="card">
+      <div class="banner">💡 What else should we bulk-buy?</div>
+      <textarea id="sv-other" placeholder="e.g. baby diapers, animal feed, charcoal, school stationery…"></textarea>
+    </div>
+    <div class="brow">
+      <button class="btn" onclick="clearSurvey()">Clear</button>
+      <button class="btn bp" style="flex:1" onclick="submitSurvey()">Submit anonymously</button>
+    </div>
+  </div>
+  <div id="sv-thanks" style="display:none">
+    <div class="success"><div class="sico">✅</div><div class="stitle">Response recorded</div><div class="ssub">Your data added to community results.</div>
+    <div class="brow" style="justify-content:center;margin-top:1rem">
+      <button class="btn" onclick="anotherSurvey()">Submit another</button>
+      <button class="btn bp" onclick="goTo('results')">See results</button>
+    </div></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══ PAGE: SIGN-UP ═══ -->
+<div class="pg" id="pg-signup">
+<div class="pi">
+  <div id="su-form">
+    <div class="al alw">This sheet is <strong>not anonymous</strong>. Your name and contact are seen by the RA committee only.</div>
     <div class="card">
       <div class="banner">👤 Your details</div>
-      <label class="form-label">Full name *</label>
-      <input type="text" id="su-name" placeholder="e.g. Peter Kamau">
-      <label class="form-label">Phone (M-Pesa number)</label>
-      <input type="tel" id="su-phone" placeholder="+254 7XX XXX XXX">
-      <label class="form-label">Your role *</label>
+      <label class="fl">Full name *</label><input type="text" id="su-name" placeholder="e.g. Peter Kamau">
+      <label class="fl">Phone (M-Pesa number)</label><input type="tel" id="su-phone" placeholder="+254 7XX XXX XXX">
+      <label class="fl">Your role *</label>
       <select id="su-role"><option value="">Select your role…</option>
-        <option>RA Chairman</option><option>Secretary / Order Coordinator</option>
-        <option>Treasurer / M-Pesa Custodian</option><option>Boda boda delivery rider</option>
-        <option>Household member / customer</option><option>Bulk supplier / distributor</option>
-        <option>Node anchor (other estate)</option><option>Committee member</option>
-        <option>Interested — no role yet</option>
+        <option>RA Chairman</option><option>Secretary / Order Coordinator</option><option>Treasurer / M-Pesa Custodian</option>
+        <option>Boda boda delivery rider</option><option>Household member / customer</option>
+        <option>Bulk supplier / distributor</option><option>Node anchor (other estate)</option>
+        <option>Committee member</option><option>Interested — no role yet</option>
       </select>
     </div>
-
     <div class="card">
       <div class="banner">📋 What you agree to share</div>
-      <div id="su-commits" style="display:flex;flex-direction:column;gap:.4rem"></div>
+      <div id="su-commits" style="display:flex;flex-direction:column;gap:.35rem"></div>
     </div>
-
     <div class="card">
       <div class="banner gold">💬 Additional note (optional)</div>
       <textarea id="su-note" placeholder="Any questions, conditions or comments…"></textarea>
     </div>
-
-    <button class="btn btn-primary btn-block" onclick="submitSignup()">Sign up</button>
+    <button class="btn bp bbl" onclick="submitSignup()">Sign up</button>
   </div>
-
-  <div id="signup-thanks" style="display:none">
-    <div class="success-screen">
-      <div class="success-icon">🤝</div>
-      <div class="success-title" id="su-thanks-name">Signed up!</div>
-      <div class="success-sub">The committee will contact you within 48 hours.</div>
-      <div class="btn-row" style="justify-content:center;margin-top:1rem">
-        <button class="btn" onclick="anotherSignup()">Add another person</button>
-        <button class="btn btn-primary" onclick="goTo('results')">View sign-up sheet</button>
-      </div>
-    </div>
+  <div id="su-thanks" style="display:none">
+    <div class="success"><div class="sico">🤝</div><div class="stitle" id="su-tname">Signed up!</div><div class="ssub">Committee will contact you within 48 hours.</div>
+    <div class="brow" style="justify-content:center;margin-top:1rem">
+      <button class="btn" onclick="anotherSignup()">Add another</button>
+      <button class="btn bp" onclick="goTo('results')">View sheet</button>
+    </div></div>
   </div>
 </div>
 </div>
 
-<!-- PAGE: RESULTS -->
-<div class="page" id="page-results">
-<div class="page-inner">
-  <div id="results-empty" style="display:none">
-    <div class="success-screen">
-      <div class="success-icon">📊</div>
-      <div class="success-title" style="color:var(--text2)">No data yet</div>
-      <div class="success-sub">Complete the survey to see results here.</div>
-      <button class="btn btn-primary" style="margin-top:1rem" onclick="goTo('survey')">Take the survey</button>
-    </div>
+<!-- ═══ PAGE: RESULTS ═══ -->
+<div class="pg" id="pg-results">
+<div class="pi">
+  <div id="res-empty" style="display:none">
+    <div class="success"><div class="sico">📊</div><div class="stitle" style="color:var(--tx2)">No data yet</div><div class="ssub">Complete the survey to see results here.</div>
+    <button class="btn bp" style="margin-top:1rem" onclick="goTo('survey')">Take the survey</button></div>
   </div>
-
-  <div id="results-content">
-    <div class="metrics four" id="r-metrics"></div>
-
-    <div class="card">
-      <div class="card-hd">Top demanded products</div>
-      <div id="r-top-items"></div>
+  <div id="res-content">
+    <div class="mg4" id="r-metrics"></div>
+    <div class="card"><div class="card-hd">Top demanded products</div><div id="r-items"></div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem">
+      <div class="card"><div class="card-hd">Household size</div><div id="r-sizes"></div></div>
+      <div class="card"><div class="card-hd">Budget range</div><div id="r-budgets"></div></div>
     </div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
-      <div class="card">
-        <div class="card-hd">Household size</div>
-        <div id="r-sizes"></div>
-      </div>
-      <div class="card">
-        <div class="card-hd">Budget range</div>
-        <div id="r-budgets"></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-hd">Stakeholder sign-up sheet</div>
-      <div id="r-signups"></div>
-    </div>
-
-    <div class="card" id="r-wishes-card" style="display:none">
-      <div class="card-hd">Open requests from community</div>
-      <div id="r-wishes" style="display:flex;flex-wrap:wrap;gap:.3rem"></div>
-    </div>
-
-    <div class="card">
-      <div class="card-hd">Export</div>
-      <div class="export-row">
-        <span class="export-icon">📄</span>
-        <div class="export-info"><div class="export-title">Manufacturer pitch brief</div><div class="export-desc">Top demands, household data, GMV estimate</div></div>
-        <button class="btn btn-sm btn-primary" onclick="exportPitch()">Download</button>
-      </div>
-      <div class="export-row">
-        <span class="export-icon">📊</span>
-        <div class="export-info"><div class="export-title">Sign-up sheet (CSV)</div><div class="export-desc">All stakeholder contacts for committee</div></div>
-        <button class="btn btn-sm" onclick="exportSignups()">Download</button>
-      </div>
-      <div class="export-row">
-        <span class="export-icon">🗑️</span>
-        <div class="export-info"><div class="export-title">Clear all data</div><div class="export-desc">Wipes surveys and sign-ups (irreversible)</div></div>
-        <button class="btn btn-sm btn-danger" onclick="clearAllData()">Clear</button>
-      </div>
+    <div class="card"><div class="card-hd">Stakeholder sign-up sheet</div><div id="r-signups"></div></div>
+    <div class="card" id="r-wishes-card" style="display:none"><div class="card-hd">Open requests</div><div id="r-wishes" style="display:flex;flex-wrap:wrap;gap:.3rem"></div></div>
+    <div class="card"><div class="card-hd">Export</div>
+      <div class="lr"><span style="font-size:18px">📄</span><div style="flex:1"><div style="font-size:12px;font-weight:700">Manufacturer pitch brief (.txt)</div><div class="muted">Top demands, GMV estimate, stakeholders</div></div><button class="btn bsm bp" onclick="exportPitch()">Download</button></div>
+      <div class="lr"><span style="font-size:18px">📊</span><div style="flex:1"><div style="font-size:12px;font-weight:700">Sign-up sheet (.csv)</div><div class="muted">All stakeholder contacts</div></div><button class="btn bsm" onclick="exportSignupsCsv()">Download</button></div>
+      <div class="lr"><span style="font-size:18px">📗</span><div style="flex:1"><div style="font-size:12px;font-weight:700">Full workbook (.xlsx)</div><div class="muted">All sheets: members, orders, P&L, Hisa, dividends</div></div><button class="btn bsm bg" onclick="exportExcel()">Download</button></div>
+      <div class="lr"><span style="font-size:18px">🗑️</span><div style="flex:1"><div style="font-size:12px;font-weight:700">Clear all data</div><div class="muted">Wipes surveys and sign-ups</div></div><button class="btn bsm bd-" onclick="clearAllData()">Clear</button></div>
     </div>
   </div>
 </div>
 </div>
 
-<!-- PAGE: ADMIN -->
-<div class="page" id="page-admin">
-<div class="page-inner">
-
-  <div id="admin-lock">
+<!-- ═══ PAGE: ADMIN ═══ -->
+<div class="pg" id="pg-admin">
+<div class="pi">
+  <div id="adm-lock">
     <div class="card" style="text-align:center;padding:2rem 1rem">
       <div style="font-size:36px;margin-bottom:.5rem">🔒</div>
-      <div style="font-size:16px;font-weight:600;margin-bottom:.3rem">Committee Admin</div>
-      <div class="muted" style="margin-bottom:1rem">Enter the committee PIN to edit settings</div>
-      <input type="password" id="pin-input" placeholder="PIN" style="text-align:center;max-width:200px;margin:0 auto .75rem;display:block">
-      <button class="btn btn-primary" onclick="checkPin()">Unlock</button>
-      <div class="muted" style="font-size:11px;margin-top:.75rem">Default PIN: 1234 — change it in settings after first login</div>
+      <div style="font-size:16px;font-weight:700;margin-bottom:.3rem">Committee Admin</div>
+      <div class="muted" style="margin-bottom:1rem">Enter the committee PIN to edit all rules and settings</div>
+      <input type="password" id="pin-in" placeholder="PIN" style="text-align:center;max-width:180px;margin:0 auto .75rem;display:block">
+      <button class="btn bp" onclick="checkPin()">Unlock</button>
+      <div class="muted" style="font-size:10px;margin-top:.75rem">Default PIN: 1234 — change after first login</div>
     </div>
   </div>
-
-  <div id="admin-panel" style="display:none">
-
-    <div class="card">
-      <div class="banner">🏡 Estate identity</div>
-      <div id="admin-estate-fields"></div>
-    </div>
-
-    <div class="card">
-      <div class="banner gold">⭐ Hisa (co-ownership) rules</div>
-      <div id="admin-hisa-fields"></div>
-    </div>
-
-    <div class="card">
-      <div class="banner">💰 Financial assumptions</div>
-      <div id="admin-finance-fields"></div>
-    </div>
-
-    <div class="card">
-      <div class="banner">🏍️ Boda boda rates</div>
-      <div id="admin-boda-fields"></div>
-    </div>
-
-    <div class="card">
-      <div class="banner">🛒 Product catalogue</div>
-      <div class="prod-row prod-hd">
-        <span>Product</span><span>Unit</span><span>Retail (Ksh)</span><span>Bulk (Ksh)</span><span></span>
+  <div id="adm-panel" style="display:none">
+    <div class="card"><div class="banner">🏡 Estate identity</div><div id="adm-estate"></div></div>
+    <div class="card"><div class="banner gold">⭐ Hisa (co-ownership) rules</div><div id="adm-hisa"></div></div>
+    <div class="card"><div class="banner">💰 Financial assumptions</div><div id="adm-fin"></div></div>
+    <div class="card"><div class="banner blue">🏍️ Boda boda rates</div><div id="adm-boda"></div></div>
+    <div class="card"><div class="banner">🛒 Product catalogue</div>
+      <div class="tbl-wrap" style="margin-bottom:.5rem">
+        <table class="tbl"><thead><tr><th>Product</th><th>Unit</th><th>Retail (Ksh)</th><th>Bulk (Ksh)</th><th></th></tr></thead>
+        <tbody id="adm-prods"></tbody></table>
       </div>
-      <div id="admin-products"></div>
-      <button class="btn btn-sm mt" onclick="addProduct()">+ Add product</button>
+      <button class="btn bsm" onclick="addProd()">+ Add product</button>
     </div>
-
-    <div class="card">
-      <div class="banner">⚡ Services in survey</div>
-      <div id="admin-services" style="display:flex;flex-direction:column;gap:.3rem"></div>
-      <button class="btn btn-sm mt" onclick="addService()">+ Add service</button>
+    <div class="card"><div class="banner">⚡ Survey services</div><div id="adm-svcs" style="display:flex;flex-direction:column;gap:.3rem"></div><button class="btn bsm" style="margin-top:.5rem" onclick="addSvc()">+ Add service</button></div>
+    <div class="card"><div class="banner">🔐 Security</div>
+      <label class="fl">New committee PIN</label>
+      <div class="flex"><input type="password" id="new-pin" placeholder="Min 4 characters" style="flex:1"><button class="btn bsm" style="margin-left:.5rem" onclick="changePin()">Save PIN</button></div>
     </div>
-
-    <div class="card">
-      <div class="banner">🔐 Security</div>
-      <label class="form-label">Change committee PIN</label>
-      <div class="flex">
-        <input type="password" id="new-pin" placeholder="New PIN" style="flex:1">
-        <button class="btn btn-sm" onclick="changePin()">Save PIN</button>
-      </div>
-    </div>
-
-    <div class="btn-row">
-      <button class="btn btn-primary btn-block" onclick="saveSettings()">💾 Save all settings</button>
-    </div>
-    <button class="btn btn-block" style="margin-top:.4rem" onclick="lockAdmin()">🔒 Lock admin</button>
+    <button class="btn bp bbl" onclick="saveSettings()">💾 Save all settings</button>
+    <button class="btn bbl" style="margin-top:.4rem" onclick="lockAdmin()">🔒 Lock admin</button>
   </div>
-
 </div>
 </div>
 
@@ -545,73 +566,44 @@ input[type=range]{width:100%;accent-color:var(--green)}
 
 <!-- BOTTOM NAV -->
 <nav id="botnav">
-  <button class="nav-item active" data-page="infographic" onclick="goTo('infographic')">
-    <svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="currentColor" stroke-width="2" fill="none"/><polyline points="9,22 9,12 15,12 15,22" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+  <button class="ni on" data-pg="home" onclick="goTo('home')">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
     How it works
   </button>
-  <button class="nav-item" data-page="survey" onclick="goTo('survey')">
-    <svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" fill="none"/></svg>
-    Survey
+  <button class="ni" data-pg="hisa" onclick="goTo('hisa')">
+    <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26 12,2"/></svg>
+    Hisa
   </button>
-  <button class="nav-item" data-page="signup" onclick="goTo('signup')">
-    <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" fill="none"/></svg>
-    Sign up
+  <button class="ni" data-pg="manuals" onclick="goTo('manuals')">
+    <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+    Manuals
   </button>
-  <button class="nav-item" data-page="results" onclick="goTo('results')">
-    <svg viewBox="0 0 24 24" fill="none"><line x1="18" y1="20" x2="18" y2="10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="20" x2="12" y2="4" stroke="currentColor" stroke-width="2"/><line x1="6" y1="20" x2="6" y2="14" stroke="currentColor" stroke-width="2"/></svg>
-    Results
+  <button class="ni" data-pg="workbook" onclick="goTo('workbook')">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+    Workbook
   </button>
-  <button class="nav-item" data-page="admin" onclick="goTo('admin')">
-    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" fill="none"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
-    Admin
+  <button class="ni" onclick="toggleDrawer()">
+    <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    More
   </button>
 </nav>
 
-<!-- TOAST -->
 <div id="toast"></div>
 
 <script>
-// ══════════════════════════════════════════════════════════
-// DEFAULT SETTINGS — all editable by the committee
-// ══════════════════════════════════════════════════════════
-const DEFAULT_SETTINGS = {
-  pin: '1234',
-  estate: {
-    name: 'Kenyatta Terrace Estate',
-    location: 'Kasarani, Nairobi',
-    chairman: 'Mr. Peter Kamau',
-    secretary: 'Ms. Grace Wanjiru',
-    treasurer: 'Mr. David Otieno',
-    paybill: '123456',
-    households: 200,
-    deliveryDay: 'Friday',
-    supplier: 'Pwani Oil Group Distributor'
-  },
-  hisa: {
-    referral: 1,
-    loyalty90: 2,
-    supplierRecruited: 3,
-    complaintResolved: 1,
-    threshold: 10,
-    maxPerMember: 50
-  },
-  finance: {
-    bulkDiscount: 15,      // % below retail
-    memberSaving: 8,       // % passed to member
-    martMargin: 7,         // % kept by mart
-    opsCostReserve: 20,    // % of margin
-    networkFee: 1,         // % of GMV
-    dividendPool: 70,      // % of net surplus
-    weeklyGMV: 300000      // Ksh estimate
-  },
-  boda: {
-    feePerDrop: 40,
-    bonusThreshold: 20,
-    bonusAmount: 150,
-    hisaAfterDays: 90,
-    hisaEarned: 2
-  },
-  products: [
+'use strict';
+// ═══════════════════════════════════════════════════════
+// DEFAULT DATA
+// ═══════════════════════════════════════════════════════
+const DEF = {
+  pin:'1234',
+  estate:{name:'Kenyatta Terrace Estate',location:'Kasarani, Nairobi',chairman:'Mr. Peter Kamau',
+    secretary:'Ms. Grace Wanjiru',treasurer:'Mr. David Otieno',paybill:'123456',
+    households:200,deliveryDay:'Friday',supplier:'Pwani Oil Group Distributor'},
+  hisa:{referral:1,loyalty90:2,supplierRecruited:3,complaintResolved:1,threshold:10,maxPerMember:50},
+  finance:{bulkDiscount:15,memberSaving:8,martMargin:7,opsCostReserve:20,networkFee:1,dividendPool:70,weeklyGMV:300000},
+  boda:{feePerDrop:40,bonusThreshold:20,bonusAmount:150,hisaAfterDays:90,hisaEarned:2},
+  products:[
     {name:'Unga Pembe Maize Flour',unit:'2kg',retail:190,bulk:162},
     {name:'Unga Pembe Maize Flour',unit:'5kg',retail:440,bulk:374},
     {name:'Kabras Sugar',unit:'2kg',retail:290,bulk:247},
@@ -628,233 +620,837 @@ const DEFAULT_SETTINGS = {
     {name:'Jogoo Rice',unit:'2kg',retail:380,bulk:323},
     {name:'Blueband Margarine',unit:'500g',retail:185,bulk:157}
   ],
-  services: [
-    'Cooking gas refill','Drinking water (20L jerrycans)','Airtime / data bundles',
+  services:['Cooking gas refill','Drinking water (20L jerrycans)','Airtime / data bundles',
     'Electricity tokens (KPLC)','School supplies (stationery)','Charcoal',
-    'Animal / poultry feed','Medicine (OTC)','Hair salon / barber'
-  ]
+    'Animal / poultry feed','Medicine (OTC)','Hair salon / barber'],
+  members:[],
+  orders:[],
+  deliveries:[],
+  hisaLedger:[],
+  nodes:[]
 };
 
-// ══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // STATE
-// ══════════════════════════════════════════════════════════
-let S = load('mm_settings') || JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
-let surveys = load('mm_surveys') || [];
-let signups = load('mm_signups') || [];
-let adminUnlocked = false;
+// ═══════════════════════════════════════════════════════
+let S = ld('mm_S') || JSON.parse(JSON.stringify(DEF));
+// Migrate old data into S if keys missing
+['members','orders','deliveries','hisaLedger','nodes'].forEach(k=>{if(!S[k])S[k]=[];});
+let surveys = ld('mm_sv') || [];
+let signups  = ld('mm_su') || [];
+let adminOk  = false;
+let currentWbTab = 'dashboard';
 
-function save(key, val){ try{localStorage.setItem(key, JSON.stringify(val))}catch(e){} }
-function load(key){ try{const v=localStorage.getItem(key);return v?JSON.parse(v):null}catch(e){return null} }
-function saveAll(){ save('mm_settings',S); save('mm_surveys',surveys); save('mm_signups',signups); }
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function ld(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch(e){return null;}}
+function saveAll(){sv('mm_S',S);sv('mm_sv',surveys);sv('mm_su',signups);}
+function fmt(n){return Number(n||0).toLocaleString('en-KE');}
+function fmtKsh(n){return 'Ksh '+fmt(n);}
 
-// ══════════════════════════════════════════════════════════
-// NAVIGATION
-// ══════════════════════════════════════════════════════════
-function goTo(page){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById('page-'+page).classList.add('active');
-  document.querySelector('[data-page='+page+']').classList.add('active');
-  if(page==='results') renderResults();
-  if(page==='infographic') renderInfographic();
-  if(page==='admin') renderAdminPanel();
+// ═══════════════════════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════════════════════
+function goTo(pg){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  const el=document.getElementById('pg-'+pg);
+  if(el) el.classList.add('on');
+  const btn=document.querySelector(`[data-pg="${pg}"]`);
+  if(btn) btn.classList.add('on');
+  if(pg==='home') renderIG();
+  if(pg==='hisa') renderHisa();
+  if(pg==='results') renderResults();
+  if(pg==='workbook') renderWb(currentWbTab);
+  if(pg==='admin') renderAdmin();
+  window.scrollTo(0,0);
 }
 
-// ══════════════════════════════════════════════════════════
-// TOAST
-// ══════════════════════════════════════════════════════════
+function toggleDrawer(){
+  document.getElementById('drawer').classList.toggle('open');
+  document.getElementById('drawer-overlay').classList.toggle('open');
+}
+
 function toast(msg){
   const t=document.getElementById('toast');
-  t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2500);
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2600);
 }
 
-// ══════════════════════════════════════════════════════════
-// INFOGRAPHIC — all values pull from S
-// ══════════════════════════════════════════════════════════
-function renderInfographic(){
-  document.getElementById('estate-name-display').textContent=S.estate.name;
+// ═══════════════════════════════════════════════════════
+// INFOGRAPHIC
+// ═══════════════════════════════════════════════════════
+function renderIG(){
+  const es=S.estate, fi=S.finance, hi=S.hisa, bo=S.boda;
+  document.getElementById('en-display').textContent=es.name;
+  document.getElementById('drawer-estate').textContent=es.name;
+  document.getElementById('ig-paybill').textContent=es.paybill;
+
+  const gmv=fi.weeklyGMV;
+  const bulkC=Math.round(gmv*(1-fi.martMargin/100-fi.memberSaving/100));
+  const gm=Math.round(gmv*fi.martMargin/100);
+  const bodaC=Math.round(es.households*bo.feePerDrop*0.6);
+  const opsC=Math.round(gm*fi.opsCostReserve/100);
+  const net=Math.round(gm-bodaC-opsC);
+  const annDiv=Math.round(net*52*fi.dividendPool/100);
 
   // Cycle
-  const cycleData=[
-    {num:1,day:'Monday',desc:'Secretary broadcasts prices to estate WhatsApp group'},
-    {num:2,day:'Tue–Thu',desc:'Members order via WhatsApp, prepay via M-Pesa paybill '+S.estate.paybill},
-    {num:3,day:'Thu night',desc:'Secretary tallies orders, sends consolidated list to '+S.estate.supplier},
-    {num:4,day:'Friday AM',desc:`Treasurer pays supplier. Boda boda riders collect & deliver (Ksh ${S.boda.feePerDrop}/drop)`},
-    {num:5,day:'Monday',desc:'Treasurer reconciles P&L. Surplus rolls into year-end dividend pool'}
+  const cd=[
+    {n:1,d:'Monday',t:'Secretary broadcasts prices to estate WhatsApp group'},
+    {n:2,d:'Tue–Thu',t:'Members order via WhatsApp, prepay via M-Pesa '+es.paybill},
+    {n:3,d:'Thu night',t:'Secretary tallies orders, sends list to '+es.supplier},
+    {n:4,d:'Fri AM',t:`Treasurer pays supplier. Boda boda deliver at Ksh ${bo.feePerDrop}/drop`},
+    {n:5,d:'Monday',t:'Treasurer reconciles P&L. Surplus accumulates for year-end dividend'}
   ];
-  document.getElementById('cycle-row').innerHTML=cycleData.map((c,i)=>`
-    <div class="cycle-step">
-      <div class="cycle-num">${c.num}</div>
-      <div class="cycle-day">${c.day}</div>
-      <div class="cycle-desc">${c.desc}</div>
-      ${i<4?'':''}
+  document.getElementById('ig-cycle').innerHTML=cd.map((c,i)=>`
+    <div class="cstep">
+      <div class="cnum">${c.n}</div>
+      <div class="cday">${c.d}</div>
+      <div class="cdesc">${c.t}</div>
     </div>`).join('');
 
-  // Money flow
-  const gmv=S.finance.weeklyGMV;
-  const bulkCost=Math.round(gmv*(1-S.finance.martMargin/100-S.finance.memberSaving/100));
-  const grossMargin=Math.round(gmv*S.finance.martMargin/100);
-  const bodaCost=Math.round(S.estate.households*S.boda.feePerDrop*0.6);
-  const opsCost=Math.round(grossMargin*S.finance.opsCostReserve/100);
-  const netSurplus=Math.round(grossMargin-bodaCost-opsCost);
-  const annualDividend=Math.round(netSurplus*52*S.finance.dividendPool/100);
+  // Money
+  document.getElementById('ig-money').innerHTML=`
+    <div class="mn"><div class="mnv">${fmtKsh(gmv)}</div><div class="mnl">Members pay</div></div>
+    <div style="color:var(--tx3)">→</div>
+    <div class="mn neg"><div class="mnv">-${fmtKsh(bulkC)}</div><div class="mnl">to supplier</div></div>
+    <div style="color:var(--tx3)">→</div>
+    <div class="mn"><div class="mnv" style="color:var(--g)">${fmtKsh(gm)}</div><div class="mnl">margin ${fi.martMargin}%</div></div>
+    <div style="color:var(--tx3)">→</div>
+    <div class="mn"><div class="mnv" style="color:var(--g)">${fmtKsh(net)}</div><div class="mnl">net surplus</div></div>`;
+  document.getElementById('ig-money2').innerHTML=`
+    <div style="background:var(--gp);border-radius:var(--r2);padding:.4rem;text-align:center;border:1px solid var(--gl)"><div style="font-size:10px;font-weight:700;color:var(--g)">Member saves</div><div style="font-size:12px;font-weight:700;color:var(--g)">${fi.memberSaving}% below retail</div></div>
+    <div style="background:var(--gdl);border-radius:var(--r2);padding:.4rem;text-align:center;border:1px solid #FFD54F"><div style="font-size:10px;font-weight:700;color:var(--or)">Rider earns</div><div style="font-size:12px;font-weight:700;color:var(--or)">${fmtKsh(bo.feePerDrop*40)}/Friday</div></div>
+    <div style="background:var(--blp);border-radius:var(--r2);padding:.4rem;text-align:center;border:1px solid #90CAF9"><div style="font-size:10px;font-weight:700;color:var(--bl)">Annual dividend pool</div><div style="font-size:12px;font-weight:700;color:var(--bl)">${fmtKsh(annDiv)}</div></div>`;
 
-  document.getElementById('money-flow').innerHTML=`
-    <div class="money-node"><div class="mv">Ksh ${fmt(gmv)}</div><div class="ml">Members pay</div></div>
-    <div class="money-arr">→</div>
-    <div class="money-node neg"><div class="mv">−Ksh ${fmt(bulkCost)}</div><div class="ml">to supplier</div></div>
-    <div class="money-arr">→</div>
-    <div class="money-node"><div class="mv" style="color:var(--green)">Ksh ${fmt(grossMargin)}</div><div class="ml">gross margin ${S.finance.martMargin}%</div></div>
-    <div class="money-arr">→</div>
-    <div class="money-node"><div class="mv" style="color:var(--green)">Ksh ${fmt(netSurplus)}</div><div class="ml">net surplus</div></div>`;
-
-  document.getElementById('money-summary').innerHTML=`
-    <div style="background:var(--green-pale);border-radius:6px;padding:.5rem;text-align:center">
-      <div style="font-size:11px;font-weight:600;color:var(--green)">Member saving</div>
-      <div style="font-size:13px;font-weight:700;color:var(--green)">~${S.finance.memberSaving}% below retail</div>
-    </div>
-    <div style="background:var(--gold-light);border-radius:6px;padding:.5rem;text-align:center">
-      <div style="font-size:11px;font-weight:600;color:var(--orange)">Rider earns</div>
-      <div style="font-size:13px;font-weight:700;color:var(--orange)">Ksh ${fmt(Math.round(S.boda.feePerDrop*40))}/Friday</div>
-    </div>
-    <div style="background:var(--blue-pale);border-radius:6px;padding:.5rem;text-align:center">
-      <div style="font-size:11px;font-weight:600;color:var(--blue)">Annual dividend pool</div>
-      <div style="font-size:13px;font-weight:700;color:var(--blue)">Ksh ${fmt(annualDividend)}</div>
-    </div>`;
-
-  // Stakeholders
+  // Stakes
   const stakes=[
-    {ico:'🏛️',nm:'RA Chairman',rl:'Anchor of trust',acts:['Endorses business publicly','Signs AGM & dividend cheques','Resolves member disputes'],earn:'Community authority + dividend'},
-    {ico:'📋',nm:'Secretary',rl:'Order coordinator',acts:['Broadcasts weekly prices','Enters orders into system','Sends order to supplier'],earn:'Stipend from ops reserve + Hisa'},
-    {ico:'💰',nm:'Treasurer',rl:'M-Pesa custodian',acts:['Collects all M-Pesa payments','Pays supplier every Friday','Reconciles weekly P&L'],earn:'Stipend from ops reserve + Hisa'},
-    {ico:'🏍️',nm:'Boda Rider',rl:'Last-mile delivery',acts:['Collects packaged orders','Delivers door-to-door','Rides branded billboard'],earn:`Ksh ${S.boda.feePerDrop}/drop + Hisa after ${S.boda.hisaAfterDays} days`},
-    {ico:'🏠',nm:'Household Member',rl:'Customer + co-owner',acts:['Orders via WhatsApp','Prepays via M-Pesa','Earns Hisa by buying & referring'],earn:`${S.finance.memberSaving}% savings + dividend at ${S.hisa.threshold} Hisa`},
-    {ico:'🏭',nm:'Bulk Supplier',rl:'Distribution partner',acts:['Gets consolidated order Thu','Gives bulk discount','Receives prepayment, zero credit risk'],earn:'Predictable weekly revenue + scale'},
-    {ico:'🌍',nm:'Node Anchor',rl:'Expansion champion',acts:['Replicates model to new estate','Onboards RA committee','Registers new node'],earn:`${S.finance.networkFee}% network fee on GMV forever`},
-    {ico:'⚖️',nm:'Committee (3)',rl:'Collective governance',acts:['2-of-3 vote on decisions','Posts monthly P&L publicly','Chairs annual AGM'],earn:'Legitimacy + dividend if Co-Owner'}
+    {i:'🏛️',n:'RA Chairman',r:'Anchor of trust',a:['Endorses business publicly','Signs AGM & dividend cheques','Resolves member disputes'],e:'Authority + dividend'},
+    {i:'📋',n:'Secretary',r:'Order coordinator',a:['Broadcasts weekly prices','Enters orders into workbook','Sends order to supplier'],e:'Stipend + Hisa'},
+    {i:'💰',n:'Treasurer',r:'M-Pesa custodian',a:['Collects M-Pesa payments','Pays supplier every Friday','Reconciles weekly P&L'],e:'Stipend + Hisa'},
+    {i:'🏍️',n:'Boda Rider',r:'Last-mile delivery',a:['Collects packaged orders','Delivers door-to-door','Branded moving billboard'],e:`Ksh ${bo.feePerDrop}/drop + Hisa`},
+    {i:'🏠',n:'Household Member',r:'Customer + co-owner',a:['Orders via WhatsApp','Prepays via M-Pesa','Earns Hisa by buying & referring'],e:`${fi.memberSaving}% savings + dividend`},
+    {i:'🏭',n:'Bulk Supplier',r:'Distribution partner',a:['Gets consolidated order Thu','Gives bulk discount','Prepaid — zero credit risk'],e:'Predictable weekly revenue'},
+    {i:'🌍',n:'Node Anchor',r:'Expansion champion',a:['Replicates model to new estate','Onboards RA committee','Registers new node'],e:`${fi.networkFee}% network fee on GMV`},
+    {i:'⚖️',n:'Committee (3)',r:'Collective governance',a:['2-of-3 vote on decisions','Posts monthly P&L publicly','Chairs annual AGM'],e:'Legitimacy + dividend'}
   ];
-  document.getElementById('stake-grid').innerHTML=stakes.map(k=>`
-    <div class="stake-card">
-      <div class="stake-top"><span class="stake-ico">${k.ico}</span><div><div class="stake-nm">${k.nm}</div><div class="stake-rl">${k.rl}</div></div></div>
-      <div class="stake-body">
-        ${k.acts.map(a=>`<div class="stake-act">${a}</div>`).join('')}
-        <div class="stake-earn">${k.earn}</div>
-      </div>
+  document.getElementById('ig-stakes').innerHTML=stakes.map(k=>`
+    <div class="sk-card">
+      <div class="sk-top"><span style="font-size:16px">${k.i}</span><div><div style="font-size:11px;font-weight:700">${k.n}</div><div style="font-size:10px;color:var(--tx2)">${k.r}</div></div></div>
+      <div class="sk-b">${k.a.map(a=>`<div class="sk-a">${a}</div>`).join('')}<div class="sk-earn">${k.e}</div></div>
     </div>`).join('');
 
-  // Hisa
-  const h=S.hisa;
-  document.getElementById('hisa-grid').innerHTML=`
-    <div class="hisa-box"><div class="hisa-val">+${h.referral}</div><div class="hisa-desc">Refer a paying household</div></div>
-    <div class="hisa-box"><div class="hisa-val">+${h.loyalty90}</div><div class="hisa-desc">Buy for ${S.boda.hisaAfterDays} days consistently</div></div>
-    <div class="hisa-box"><div class="hisa-val">+${h.supplierRecruited}</div><div class="hisa-desc">Recruit a supplier or partner</div></div>
-    <div class="hisa-box"><div class="hisa-val">+${h.complaintResolved}</div><div class="hisa-desc">Resolve a community complaint</div></div>
-    <div class="hisa-box highlight"><div class="hisa-val">= ${h.threshold}</div><div class="hisa-desc">Co-Owner status + dividend</div></div>`;
-
-  document.getElementById('hisa-status').innerHTML=`
-    <div style="background:var(--green-pale);border-radius:6px;padding:.4rem .5rem;border:1px solid var(--green-light)">
-      <div style="font-size:11px;font-weight:600;color:var(--green)">Member</div>
-      <div style="font-size:10px;color:var(--text2)">Buying, building trust. Under ${h.threshold} Hisa.</div>
-    </div>
-    <div style="background:var(--gold-light);border-radius:6px;padding:.4rem .5rem;border:1px solid #FFD54F">
-      <div style="font-size:11px;font-weight:600;color:var(--orange)">Advocate</div>
-      <div style="font-size:10px;color:var(--text2)">Referring, active. Almost there.</div>
-    </div>
-    <div style="background:var(--green);border-radius:6px;padding:.4rem .5rem">
-      <div style="font-size:11px;font-weight:600;color:var(--gold)">✓ Co-Owner</div>
-      <div style="font-size:10px;color:var(--green-light)">${h.threshold}+ Hisa. Name on the wall. Dividend at AGM.</div>
-    </div>`;
+  // Hisa boxes
+  document.getElementById('ig-hisa').innerHTML=`
+    <div class="hbox"><div class="hval">+${hi.referral}</div><div class="hdesc">Refer a household</div></div>
+    <div class="hbox"><div class="hval">+${hi.loyalty90}</div><div class="hdesc">90-day loyalty</div></div>
+    <div class="hbox"><div class="hval">+${hi.supplierRecruited}</div><div class="hdesc">Supplier recruited</div></div>
+    <div class="hbox"><div class="hval">+${hi.complaintResolved}</div><div class="hdesc">Dispute resolved</div></div>
+    <div class="hbox hl"><div class="hval">= ${hi.threshold}</div><div class="hdesc">Co-Owner + dividend</div></div>`;
+  document.getElementById('ig-hisa2').innerHTML=`
+    <div style="background:var(--gp);border-radius:var(--r2);padding:.4rem;border:1px solid var(--gl)"><div style="font-size:10px;font-weight:700;color:var(--g)">Member</div><div style="font-size:9px;color:var(--tx2)">Buying, building. Under ${hi.threshold} Hisa.</div></div>
+    <div style="background:var(--gdl);border-radius:var(--r2);padding:.4rem;border:1px solid #FFD54F"><div style="font-size:10px;font-weight:700;color:var(--or)">Advocate</div><div style="font-size:9px;color:var(--tx2)">Referring, active. Almost there.</div></div>
+    <div style="background:var(--g);border-radius:var(--r2);padding:.4rem"><div style="font-size:10px;font-weight:700;color:var(--gold)">✓ Co-Owner</div><div style="font-size:9px;color:var(--gl)">${hi.threshold}+ Hisa. Dividend at AGM.</div></div>`;
 
   // Scale
-  const wGMV=S.finance.weeklyGMV;
-  document.getElementById('scale-grid').innerHTML=`
-    <div class="scale-box">
-      <div class="scale-phase">Phase 1 · Months 1–6</div>
-      <div class="scale-num">1 estate</div>
-      <div class="scale-sub">Home node</div>
-      <div class="scale-items">
-        <div class="scale-item">${S.estate.households} households</div>
-        <div class="scale-item">Ksh ${fmt(wGMV)} GMV/week</div>
-        <div class="scale-item">2–4 boda boda riders</div>
-        <div class="scale-item">Ksh ${fmt(annualDividend)} dividend pool/yr</div>
-      </div>
+  document.getElementById('ig-scale').innerHTML=`
+    <div style="background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r2);padding:.5rem">
+      <div style="font-size:9px;font-weight:700;color:var(--g);text-transform:uppercase;letter-spacing:.05em">Phase 1 · 1–6 months</div>
+      <div style="font-size:17px;font-weight:700">1 estate</div>
+      <div style="font-size:10px;color:var(--tx2)">${es.households} households · ${fmtKsh(gmv)} GMV/wk · ${fmtKsh(annDiv)} dividend/yr</div>
     </div>
-    <div class="scale-box">
-      <div class="scale-phase">Phase 2 · Months 7–18</div>
-      <div class="scale-num">5 estates</div>
-      <div class="scale-sub">Network of nodes</div>
-      <div class="scale-items">
-        <div class="scale-item">${S.estate.households*5} households</div>
-        <div class="scale-item">Ksh ${fmt(wGMV*5)} GMV/week</div>
-        <div class="scale-item">10–20 branded boda bodas</div>
-        <div class="scale-item">Preferred supplier status</div>
-      </div>
+    <div style="background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r2);padding:.5rem">
+      <div style="font-size:9px;font-weight:700;color:var(--g);text-transform:uppercase;letter-spacing:.05em">Phase 2 · 7–18 months</div>
+      <div style="font-size:17px;font-weight:700">5 estates</div>
+      <div style="font-size:10px;color:var(--tx2)">${es.households*5} households · ${fmtKsh(gmv*5)} GMV/wk</div>
     </div>
-    <div class="scale-box" style="border-color:var(--green)">
-      <div class="scale-phase">Phase 3 · Year 3+</div>
-      <div class="scale-num">20+ estates</div>
-      <div class="scale-sub">Franchise framework</div>
-      <div class="scale-items">
-        <div class="scale-item">${fmt(S.estate.households*20)}+ households</div>
-        <div class="scale-item">Ksh ${fmt(wGMV*20)} GMV/week</div>
-        <div class="scale-item">Direct manufacturer deals</div>
-        <div class="scale-item">Founder earns ${S.finance.networkFee}% on all nodes</div>
-      </div>
+    <div style="background:var(--sf2);border:1px solid var(--g);border-radius:var(--r2);padding:.5rem">
+      <div style="font-size:9px;font-weight:700;color:var(--g);text-transform:uppercase;letter-spacing:.05em">Phase 3 · Year 3+</div>
+      <div style="font-size:17px;font-weight:700">20+ estates</div>
+      <div style="font-size:10px;color:var(--tx2)">${fmt(es.households*20)}+ households · ${fi.networkFee}% network fee</div>
     </div>`;
 
-  // Trust
-  document.getElementById('trust-grid').innerHTML=`
-    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.5rem .6rem;display:flex;gap:.5rem">
-      <span style="font-size:16px">🏛️</span>
-      <div><div style="font-size:11px;font-weight:600">Governed by the RA</div><div style="font-size:10px;color:var(--text2)">Registered under Societies / Co-operatives Act. Registration number on noticeboard.</div></div>
+  document.getElementById('ig-trust').innerHTML=`
+    <div style="background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r2);padding:.5rem;display:flex;gap:.4rem"><span style="font-size:14px">🏛️</span><div><div style="font-size:10px;font-weight:700">Governed by the RA</div><div style="font-size:9px;color:var(--tx2)">Registered under Co-operatives Act. Reg. no. on noticeboard. Publicly verifiable.</div></div></div>
+    <div style="background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r2);padding:.5rem;display:flex;gap:.4rem"><span style="font-size:14px">📱</span><div><div style="font-size:10px;font-weight:700">No joining fee</div><div style="font-size:9px;color:var(--tx2)">Zero cost to join. Earn by buying, not recruiting. The opposite of MLM.</div></div></div>
+    <div style="background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r2);padding:.5rem;display:flex;gap:.4rem"><span style="font-size:14px">📂</span><div><div style="font-size:10px;font-weight:700">Open books always</div><div style="font-size:9px;color:var(--tx2)">Monthly P&L on noticeboard. AGM with full accounts. Any Co-Owner can inspect.</div></div></div>
+    <div style="background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r2);padding:.5rem;display:flex;gap:.4rem"><span style="font-size:14px">🌱</span><div><div style="font-size:10px;font-weight:700">Rooted in Harambee</div><div style="font-size:9px;color:var(--tx2)">Mwethya, Ikundi, Nyumba Kumi and Mondragon — community equity is centuries old.</div></div></div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// HISA EXPLAINER
+// ═══════════════════════════════════════════════════════
+function renderHisa(){
+  const hi=S.hisa, bo=S.boda;
+  document.getElementById('he-threshold').textContent=hi.threshold;
+
+  // Earn cards
+  const ec=[
+    {v:'+'+hi.referral,t:'Refer a neighbour',d:'Tell a household about Mtaa Mart. They place their first order. You earn '+hi.referral+' Hisa.'},
+    {v:'+'+hi.loyalty90,t:'Buy for '+bo.hisaAfterDays+' days',d:'Order consistently every Friday for 3 months without skipping. Loyalty rewarded.'},
+    {v:'+'+hi.supplierRecruited,t:'Bring a supplier',d:'Know a good distributor or farmer? Introduce them to the committee. Biggest reward.'},
+    {v:'+'+hi.complaintResolved,t:'Resolve a dispute',d:'Help mediate a complaint between a member and the committee. Community glue.'}
+  ];
+  document.getElementById('hisa-earn-cards').innerHTML=ec.map(e=>`
+    <div style="background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r2);padding:.6rem;display:flex;gap:.5rem;align-items:center">
+      <div style="width:34px;height:34px;border-radius:50%;background:var(--g);color:var(--gold);font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">${e.v}</div>
+      <div><div style="font-size:11px;font-weight:700">${e.t}</div><div style="font-size:10px;color:var(--tx2);line-height:1.4;margin-top:1px">${e.d}</div></div>
+    </div>`).join('');
+
+  // Simulator
+  const simDefs=[
+    {id:'sr',lbl:'Neighbours referred',max:10,val:2,mult:hi.referral,name:'referrals'},
+    {id:'sl',lbl:'90-day cycles completed',max:4,val:1,mult:hi.loyalty90,name:'loyalty'},
+    {id:'ss',lbl:'Suppliers introduced',max:5,val:0,mult:hi.supplierRecruited,name:'suppliers'},
+    {id:'sd',lbl:'Disputes helped resolve',max:5,val:1,mult:hi.complaintResolved,name:'disputes'}
+  ];
+  document.getElementById('sim-rows').innerHTML=simDefs.map(s=>`
+    <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.45rem;font-size:12px">
+      <span style="flex:0 0 160px;color:var(--tx2)">${s.lbl}</span>
+      <input type="range" min="0" max="${s.max}" value="${s.val}" step="1" id="${s.id}" style="flex:1" oninput="calcSim()">
+      <span style="min-width:24px;font-weight:700;text-align:right" id="${s.id}v">${s.val}</span>
+    </div>`).join('');
+  calcSim();
+
+  // Journey
+  const journey=[
+    {st:'done',n:'1',t:'You hear about Mtaa Mart',d:'A neighbour says unga is Ksh 16 cheaper per 2kg bag. You\'re curious but sceptical.',r:null},
+    {st:'done',n:'2',t:'You place your first order',d:'Monday: reply to WhatsApp broadcast. Thursday: pay via M-Pesa. Friday: boda boda delivers to your door.',r:'0 Hisa — but you saved Ksh 180 this week'},
+    {st:'done',n:'3',t:'You tell your neighbour in B-202',d:'They order their first Friday. Secretary records it. You earned your first Hisa.',r:'+'+hi.referral+' Hisa · Running total: '+hi.referral},
+    {st:'active',n:'4',t:'You buy every week for 90 days',d:'Thirteen Fridays. You haven\'t skipped once. Secretary awards loyalty bonus.',r:'+'+hi.loyalty90+' Hisa · Running total: '+(hi.referral+hi.loyalty90)},
+    {st:'future',n:'5',t:'You introduce a gas supplier',d:'Your cousin\'s brother distributes 6kg cylinders. You make the introduction. Committee negotiates a deal.',r:'+'+hi.supplierRecruited+' Hisa · Running total: '+(hi.referral+hi.loyalty90+hi.supplierRecruited)},
+    {st:'future',n:'6',t:'Another 90 days of loyalty',d:'Second quarter. You\'ve been buying for six months. Second loyalty Hisa arrives automatically.',r:'+'+hi.loyalty90+' Hisa · Running total: '+(hi.referral+hi.loyalty90*2+hi.supplierRecruited)},
+    {st:'future',n:'7',t:'You help resolve a dispute',d:'A member\'s delivery was short. You mediate, committee credits them. Peace kept.',r:'+'+hi.complaintResolved+' Hisa · Running total: '+(hi.referral+hi.loyalty90*2+hi.supplierRecruited+hi.complaintResolved)},
+    {st:'future',n:'★',t:'You refer one more neighbour',d:'You\'ve reached '+hi.threshold+' Hisa. Your name enters the Co-Owner register.',r:'+'+hi.referral+' Hisa · ✅ CO-OWNER — Dividend at next AGM',co:true}
+  ];
+  document.getElementById('hisa-journey').innerHTML=journey.map(j=>`
+    <div class="jstep">
+      <div class="jnum j${j.st}">${j.n}</div>
+      <div class="jtxt">
+        <div class="jtitle">${j.t}</div>
+        <div class="jdesc">${j.d}</div>
+        ${j.r?`<div class="jrew ${j.co?'co':''}">${j.r}</div>`:''}
+      </div>
+    </div>`).join('');
+}
+
+function calcSim(){
+  const defs=[
+    {id:'sr',mult:S.hisa.referral,name:'referrals'},
+    {id:'sl',mult:S.hisa.loyalty90,name:'loyalty'},
+    {id:'ss',mult:S.hisa.supplierRecruited,name:'suppliers'},
+    {id:'sd',mult:S.hisa.complaintResolved,name:'disputes'}
+  ];
+  let total=0;const pills=[];
+  defs.forEach(d=>{
+    const v=+document.getElementById(d.id).value;
+    document.getElementById(d.id+'v').textContent=v;
+    const pts=v*d.mult;total+=pts;
+    if(pts>0) pills.push(pts+' from '+d.name);
+  });
+  const thr=S.hisa.threshold;
+  const rem=Math.max(0,thr-total);
+  document.getElementById('sim-total').textContent=total+' Hisa';
+  document.getElementById('sim-label').textContent=rem===0?'Co-Owner status reached! Dividend at next AGM.':`${rem} more Hisa to Co-Owner status`;
+  const reached=total>=thr;
+  document.getElementById('sim-pills').innerHTML=pills.map(p=>`<span style="padding:2px 9px;border-radius:99px;font-size:10px;font-weight:600;background:${reached?'var(--gold)':'rgba(255,255,255,.15)'};color:${reached?'#333':'var(--gl)'}">${p}</span>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// MANUALS
+// ═══════════════════════════════════════════════════════
+const MANUALS=[
+  {ico:'🏛️',role:'RA Chairman',sub:'Anchor of trust — your name makes it real',color:'var(--g)',
+   sections:[
+    {title:'Weekly (10 min)',steps:['Approve the Friday order broadcast — Secretary sends to you first','Countersign M-Pesa reconciliation — Treasurer sends screenshot','Resolve any member dispute escalated by Secretary']},
+    {title:'Monthly (30 min)',steps:['Review one-page P&L from WEEKLY P&L tab in the workbook','Approve any new product additions — Secretary updates catalogue','Endorse new Co-Owner certificates when Hisa threshold is reached']},
+    {title:'Annually — AGM (2 hrs)',steps:['Chair the AGM — open books, table full-year surplus','Approve dividend payout from DIVIDEND CALC tab','Sign dividend cheques / M-Pesa disbursements','Elect next committee term']},
+    {title:'What to tell sceptical residents',steps:['"No joining fee. No recruitment commissions. This is run by your RA."','"The RA registration number is on the noticeboard — go verify it."','"At Christmas I will show you the cheques. No surplus = no dividend."']}
+   ],
+   earn:'Community authority + dividend if Co-Owner',
+   warn:'NEVER sign a blank cheque or pre-approve M-Pesa before orders are fully tallied.'},
+  {ico:'📋',role:'Secretary / Order Coordinator',sub:'You run the weekly engine',color:'var(--gm)',
+   sections:[
+    {title:'Monday — Broadcast',steps:['Open Product Catalogue tab in workbook — copy prices','Post to estate WhatsApp: "MTAA MART ORDER — Friday delivery. Sugar 2kg: Ksh 265. Unga 2kg: Ksh 174…"','Pin the message at top of group']},
+    {title:'Tue–Thu — Collect orders',steps:['Members reply via WhatsApp with their order','Enter each order into WEEKLY ORDERS tab — row per household, columns per product','Confirm M-Pesa payment with Treasurer before recording each order']},
+    {title:'Thursday night — Tally & purchase order',steps:['Lock the order — no changes after midnight','Screenshot TOTALS row from WEEKLY ORDERS','Send consolidated list to supplier via WhatsApp','Confirm pickup/delivery time with supplier']},
+    {title:'Friday — Delivery day',steps:['Open DELIVERY TRACKER tab','Assign each household to a boda boda rider','Update status to Delivered as confirmations arrive','Any household that did NOT prepay does NOT receive goods — no exceptions']}
+   ],
+   earn:'Stipend from ops reserve + Hisa units',
+   warn:'You do NOT handle M-Pesa money. All payments go to Treasurer\'s custodian number only.'},
+  {ico:'💰',role:'Treasurer / M-Pesa Custodian',sub:'Every shilling in has a matching order',color:'#6A1B9A',
+   sections:[
+    {title:'Money IN — Member payments',steps:['Members pay via M-Pesa to RA Paybill ONLY — never accept cash','Download M-Pesa statement Thursday night','Match each payment to order in WEEKLY ORDERS','Confirm to Secretary: "Household X paid — proceed"']},
+    {title:'Money OUT — Supplier payment',steps:['Friday morning: transfer bulk total to supplier','Save supplier M-Pesa confirmation screenshot','Transfer boda boda fees post-delivery confirmation','Save all receipts']},
+    {title:'Weekly reconciliation (every Monday)',steps:['Open WEEKLY P&L tab — verify GMV matches M-Pesa in','Verify supplier payment matches bulk cost','Verify boda fees match DELIVERY TRACKER totals','Screenshot P&L and send to Chairman + Secretary']},
+    {title:'Annual dividend (AGM)',steps:['Open DIVIDEND CALC tab','Execute M-Pesa payments per dividend table','Both Chairman AND Treasurer must approve any single transfer above Ksh 10,000']}
+   ],
+   earn:'Stipend from ops reserve + Hisa units',
+   warn:'NEVER pay a supplier before member payments are fully collected. NEVER mix RA general funds with Mtaa Mart funds.'},
+  {ico:'🏍️',role:'Boda Boda Delivery Rider',sub:`Your delivery day, your income, your ownership`,color:'#1565C0',
+   sections:[
+    {title:'Before you start (7:00 AM Friday)',steps:['Collect delivery manifest from Secretary — household name, apt, order items','Collect packaged goods from central pickup point','Count packages — must match manifest total','Sign the handover sheet before you leave']},
+    {title:'During delivery',steps:['Deliver to apartment door — never give to neighbours','Get signature or WhatsApp confirmation from resident','If no one home — call first, then report to Secretary','NEVER accept cash from a member — all payment done via M-Pesa already']},
+    {title:'After delivery (by 6 PM)',steps:['Return undelivered goods to Secretary with reason','Collect your delivery fee from Treasurer via M-Pesa','Confirm your delivery count for the DELIVERY TRACKER']},
+    {title:'Your Hisa journey',steps:['After 90 days of consistent Friday deliveries: +2 Hisa units','10 Hisa = Co-Owner status + year-end dividend share','After 30 days: Secretary arranges branded banner for your boda boda']}
+   ],
+   earn:`Ksh ${S.boda.feePerDrop}/drop + Ksh ${S.boda.bonusAmount} bonus at ${S.boda.bonusThreshold}+ deliveries + Hisa after ${S.boda.hisaAfterDays} days`,
+   warn:'Damaged or missing goods = you are responsible. Handle with care. Miss a Friday without 24hr notice and you may lose your route.'},
+  {ico:'🏠',role:'Household Member / Customer',sub:'Buy smarter. Save money. Earn ownership.',color:'var(--g)',
+   sections:[
+    {title:'Step 1 — See the weekly menu (Monday)',steps:['Secretary posts prices every Monday in the estate WhatsApp group','The message is pinned at the top — look for "MTAA MART ORDER"','Compare prices with your nearest duka — you will always save at least 8%']},
+    {title:'Step 2 — Place your order (by Thursday 11PM)',steps:['Reply to the pinned message: "Unga x2, Sugar 2kg x1, Oil 1L x2 — Apt A-101"','Secretary confirms your total amount','Pay via M-Pesa to the RA Paybill immediately — reference: your apartment number']},
+    {title:'Step 3 — Receive delivery (Friday)',steps:['Your rider knocks on your door between 9AM and 6PM Friday','Check your goods match your order before the rider leaves','If you will not be home — leave instructions with a trusted neighbour AND tell the Secretary']},
+    {title:'Earn Hisa — your path to co-ownership',steps:['Refer a neighbour who orders: +1 Hisa','Order consistently for 90 days: +2 Hisa','Reach 10 Hisa = Co-Owner + year-end dividend cheque']}
+   ],
+   earn:`~Ksh 180+ saved per week · Dividend cheque at AGM when you reach ${S.hisa.threshold} Hisa`,
+   warn:'Orders not paid by Thursday midnight are cancelled. No exceptions — this protects everyone.'},
+  {ico:'🏭',role:'Bulk Supplier / Distributor',sub:'We are your most reliable customer — prepaid, weekly, growing',color:'#37474F',
+   sections:[
+    {title:'Thursday night — Order sent',steps:['You receive a consolidated order list from our Secretary via WhatsApp','List shows exact quantities per SKU — no guesswork','Confirm receipt and advise if any item is unavailable','Propose substitute if needed — we confirm or decline']},
+    {title:'Friday morning — Goods ready',steps:['Package goods per the consolidated order list','Our Treasurer pays via M-Pesa BEFORE goods leave your premises','Our committee member or boda rider collects by 8AM','Provide a delivery note / receipt for our records']},
+    {title:'What we offer you',steps:['100% prepaid every week — zero credit risk to you','Predictable weekly volumes — helps your own procurement','Growing order size as we add new members and new estate nodes','Loyalty — we do not price-shop week by week']},
+    {title:'What we ask of you',steps:['Minimum 12% bulk discount below your standard retail price','Consistent quality — 200 households trust our recommendation','48-hour notice if any product is out of stock']}
+   ],
+   earn:'Predictable weekly revenue + preferred supplier status as network scales',
+   warn:'Short-supplying or quality issues affects community trust. We will switch suppliers without negotiation.'},
+  {ico:'🌍',role:'Node Anchor — New Estate',sub:'You saw it work. Now bring it home.',color:'#E65100',
+   sections:[
+    {title:'Week 1 — Credibility',steps:['Attend your estate RA meeting','Ask for 5 minutes on the agenda','Show this app and the Excel workbook download','Show a screenshot of the dividend cheque from the home node']},
+    {title:'Week 2 — Committee',steps:['RA elects a 3-person Mtaa Mart Committee','Register Mtaa Mart as RA trading arm (Societies Act)','Open dedicated M-Pesa Paybill for collections']},
+    {title:'Week 3 — Setup',steps:['Download the app and update ESTATE SETUP in Admin tab','Identify your boda boda riders at the estate gate','Visit the same supplier — negotiate same terms','Run a test order: 10 households, one product']},
+    {title:'Week 4 — Launch',steps:['First full order broadcast to estate WhatsApp group','First Friday delivery','Register your node on the NETWORK NODES tab of the home node']}
+   ],
+   earn:`${S.finance.networkFee}% network fee on your node GMV — paid by the business, disclosed to your RA upfront`,
+   warn:'The 1% network fee is a governance/licensing fee paid by the business — NOT by members. Always disclose this in RA minutes.'},
+  {ico:'⚖️',role:'Committee — Collective Governance',sub:'Three people. One mission. Open books always.',color:'#00695C',
+   sections:[
+    {title:'Chairman decides alone',steps:['Escalated member dispute resolution','Public statements about Mtaa Mart','Suspension of a member or rider']},
+    {title:'Requires 2 of 3 committee votes',steps:['Adding or removing a product from the catalogue','Changing the bulk supplier','Any single M-Pesa transfer above Ksh 10,000','Approving a new boda boda rider','Authorising a network node']},
+    {title:'Requires full AGM vote',steps:['Changing the Hisa threshold for Co-Owner status','Changing the dividend pool percentage','Electing or removing a committee member','Dissolving or merging Mtaa Mart']},
+    {title:'5 transparency obligations',steps:['Weekly P&L screenshot sent to all committee members every Monday','Monthly one-pager posted on estate noticeboard','Quarterly: any member may request to inspect the full workbook','Annual AGM: table full-year accounts, propose dividend, open Q&A','Any time: Co-Owner can call special meeting with 72-hour notice + 3 Co-Owner signatures']}
+   ],
+   earn:'Legitimacy + dividend if Co-Owner + community trust',
+   warn:'No single committee member may authorise a payment alone. Ever. Two signatures minimum on all financial transactions.'}
+];
+
+function renderManuals(){
+  document.getElementById('manuals-list').innerHTML=MANUALS.map((m,i)=>`
+    <div class="acc-item">
+      <button class="acc-hd" onclick="toggleAcc(${i})">
+        <span class="acc-ico">${m.ico}</span>
+        <div style="flex:1">
+          <div>${m.role}</div>
+          <div style="font-size:10px;color:var(--tx2);font-weight:400">${m.sub}</div>
+        </div>
+        <span class="acc-arr">▼</span>
+      </button>
+      <div class="acc-body" id="acc-${i}">
+        ${m.sections.map(s=>`
+          <div class="acc-sect">
+            <div class="acc-sect-title">${s.title}</div>
+            ${s.steps.map(st=>`<div class="acc-step">${st}</div>`).join('')}
+          </div>`).join('<div class="divider"></div>')}
+        <div class="divider"></div>
+        <div class="acc-earn">💰 ${m.earn}</div>
+        ${m.warn?`<div class="acc-warn">⚠ ${m.warn}</div>`:''}
+      </div>
+    </div>`).join('');
+}
+
+function toggleAcc(i){
+  const hd=document.querySelectorAll('.acc-hd')[i];
+  const bd=document.getElementById('acc-'+i);
+  hd.classList.toggle('open');
+  bd.classList.toggle('open');
+}
+
+// ═══════════════════════════════════════════════════════
+// WORKBOOK
+// ═══════════════════════════════════════════════════════
+const WB_TABS=[
+  {id:'dashboard',label:'📊 Dashboard'},
+  {id:'members',label:'👥 Members'},
+  {id:'orders',label:'📦 Orders'},
+  {id:'delivery',label:'🏍️ Delivery'},
+  {id:'pl',label:'💰 P&L'},
+  {id:'hisa',label:'⭐ Hisa'},
+  {id:'dividend',label:'🎁 Dividend'},
+  {id:'nodes',label:'🌍 Nodes'}
+];
+
+function renderWbNav(){
+  document.getElementById('wb-nav').innerHTML=WB_TABS.map(t=>`
+    <button class="wbn ${t.id===currentWbTab?'on':''}" onclick="switchWb('${t.id}')">${t.label}</button>`).join('');
+}
+
+function switchWb(tab){
+  currentWbTab=tab;
+  document.querySelectorAll('.wbs').forEach(e=>e.classList.remove('on'));
+  document.getElementById('wb-'+tab).classList.add('on');
+  renderWbNav();
+  renderWbTab(tab);
+}
+
+function renderWb(tab){
+  renderWbNav();
+  renderWbTab(tab);
+}
+
+function renderWbTab(tab){
+  if(tab==='dashboard') renderDashboard();
+  else if(tab==='members') renderMembers();
+  else if(tab==='orders') renderOrders();
+  else if(tab==='delivery') renderDelivery();
+  else if(tab==='pl') renderPL();
+  else if(tab==='hisa') renderHisaLedger();
+  else if(tab==='dividend') renderDividend();
+  else if(tab==='nodes') renderNodes();
+}
+
+// Dashboard
+function renderDashboard(){
+  const members=S.members||[];
+  const orders=S.orders||[];
+  const del=S.deliveries||[];
+  const hisa=S.hisaLedger||[];
+  const activeM=members.filter(m=>m.status==='Active').length;
+  const thisWkOrders=orders.filter(o=>o.week===currentWeek());
+  const thisWkGMV=thisWkOrders.reduce((a,o)=>a+o.total,0);
+  const thisWkDel=del.filter(d=>d.week===currentWeek());
+  const delivered=thisWkDel.filter(d=>d.status==='Delivered').length;
+  const coOwners=members.filter(m=>hisaTotal(m.name)>=S.hisa.threshold).length;
+  const nodes=(S.nodes||[]).filter(n=>n.status==='Active').length;
+
+  document.getElementById('wb-dashboard').innerHTML=`
+    <div class="card">
+      <div class="banner">📊 Live KPIs — ${S.estate.name}</div>
+      <div class="mg4" style="margin-bottom:0">
+        <div class="m"><div class="mv">${activeM}</div><div class="ml">active members</div></div>
+        <div class="m"><div class="mv">${fmtKsh(thisWkGMV)}</div><div class="ml">this week GMV</div></div>
+        <div class="m"><div class="mv">${delivered}</div><div class="ml">deliveries this week</div></div>
+        <div class="m"><div class="mv">${coOwners}</div><div class="ml">co-owners</div></div>
+      </div>
     </div>
-    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.5rem .6rem;display:flex;gap:.5rem">
-      <span style="font-size:16px">📱</span>
-      <div><div style="font-size:11px;font-weight:600">No joining fee</div><div style="font-size:10px;color:var(--text2)">Zero cost to join. You earn by buying, not recruiting. The opposite of MLM.</div></div>
+    <div class="mg2">
+      <div class="card"><div class="card-hd">Hisa issued</div><div class="mv" style="font-size:22px;text-align:center">${hisa.reduce((a,h)=>a+h.total,0)}</div><div class="muted center">total units across all members</div></div>
+      <div class="card"><div class="card-hd">Network nodes</div><div class="mv" style="font-size:22px;text-align:center">${nodes||1}</div><div class="muted center">active estate nodes</div></div>
     </div>
-    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.5rem .6rem;display:flex;gap:.5rem">
-      <span style="font-size:16px">📂</span>
-      <div><div style="font-size:11px;font-weight:600">Open books always</div><div style="font-size:10px;color:var(--text2)">Monthly P&L on noticeboard. Annual AGM. Any Co-Owner can inspect the workbook.</div></div>
+    <div class="card">
+      <div class="card-hd">Quick actions</div>
+      <div class="brow" style="flex-wrap:wrap">
+        <button class="btn bsm" onclick="switchWb('members')">+ Add member</button>
+        <button class="btn bsm" onclick="switchWb('orders')">+ Enter orders</button>
+        <button class="btn bsm" onclick="switchWb('delivery')">+ Track delivery</button>
+        <button class="btn bsm bg" onclick="exportExcel()">↓ Export Excel</button>
+      </div>
     </div>
-    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.5rem .6rem;display:flex;gap:.5rem">
-      <span style="font-size:16px">🌱</span>
-      <div><div style="font-size:11px;font-weight:600">Rooted in Harambee</div><div style="font-size:10px;color:var(--text2)">Mwethya, Ikundi, Nyumba Kumi and Mondragon — community equity is centuries old.</div></div>
+    <div class="card">
+      <div class="card-hd">Estate details</div>
+      ${[['Chairman',S.estate.chairman],['Secretary',S.estate.secretary],['Treasurer',S.estate.treasurer],['M-Pesa Paybill',S.estate.paybill],['Delivery Day',S.estate.deliveryDay],['Supplier',S.estate.supplier]].map(([k,v])=>`<div class="lr"><span class="muted" style="flex:0 0 120px">${k}</span><span style="font-weight:600">${v||'—'}</span></div>`).join('')}
     </div>`;
 }
 
-// ══════════════════════════════════════════════════════════
+function currentWeek(){
+  const now=new Date();
+  const jan1=new Date(now.getFullYear(),0,1);
+  const wk=Math.ceil(((now-jan1)/86400000+jan1.getDay()+1)/7);
+  return `W${wk}-${now.getFullYear()}`;
+}
+
+// Members
+function renderMembers(){
+  const members=S.members||[];
+  document.getElementById('wb-members').innerHTML=`
+    <div class="card">
+      <div class="banner">👥 Member register — ${members.length} registered</div>
+      <div class="brow" style="margin-bottom:.65rem">
+        <input type="text" id="mb-name" placeholder="Full name / household" style="flex:1">
+        <input type="text" id="mb-apt" placeholder="Apt / plot" style="width:80px">
+        <input type="tel" id="mb-phone" placeholder="Phone" style="width:120px">
+        <button class="btn bsm bp" onclick="addMember()">+ Add</button>
+      </div>
+      ${members.length===0?'<div class="muted center" style="padding:1rem">No members yet — add your first household above.</div>':
+        `<div class="tbl-wrap"><table class="tbl">
+          <thead><tr><th>#</th><th>Name / Household</th><th>Apt</th><th>Phone</th><th>Status</th><th>Hisa</th><th></th></tr></thead>
+          <tbody>${members.map((m,i)=>`<tr>
+            <td>${i+1}</td>
+            <td><input value="${m.name}" onchange="editMember(${i},'name',this.value)"></td>
+            <td><input value="${m.apt||''}" onchange="editMember(${i},'apt',this.value)" style="width:70px"></td>
+            <td><input value="${m.phone||''}" onchange="editMember(${i},'phone',this.value)" style="width:110px"></td>
+            <td><select onchange="editMember(${i},'status',this.value)" style="font-size:11px;padding:3px 4px">
+              <option ${m.status==='Active'?'selected':''}>Active</option>
+              <option ${m.status==='Inactive'?'selected':''}>Inactive</option>
+              <option ${m.status==='Suspended'?'selected':''}>Suspended</option>
+            </select></td>
+            <td style="text-align:center;font-weight:700;color:var(--g)">${hisaTotal(m.name)}</td>
+            <td><button onclick="removeMember(${i})" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:14px">✕</button></td>
+          </tr>`).join('')}</tbody>
+        </table></div>`}
+    </div>`;
+}
+
+function addMember(){
+  const name=document.getElementById('mb-name').value.trim();
+  const apt=document.getElementById('mb-apt').value.trim();
+  const phone=document.getElementById('mb-phone').value.trim();
+  if(!name){toast('Enter a household name');return;}
+  if(!S.members) S.members=[];
+  S.members.push({name,apt,phone,status:'Active',joined:new Date().toISOString().split('T')[0]});
+  sv('mm_S',S);
+  document.getElementById('mb-name').value='';
+  document.getElementById('mb-apt').value='';
+  document.getElementById('mb-phone').value='';
+  renderMembers();
+  toast('Member added');
+}
+
+function editMember(i,key,val){
+  S.members[i][key]=val;
+  sv('mm_S',S);
+}
+
+function removeMember(i){
+  if(!confirm('Remove this member?'))return;
+  S.members.splice(i,1);
+  sv('mm_S',S);
+  renderMembers();
+}
+
+// Orders
+function renderOrders(){
+  const wk=currentWeek();
+  const prods=S.products.slice(0,8); // show first 8 columns to keep table manageable
+  const members=(S.members||[]).filter(m=>m.status==='Active');
+  const orders=S.orders||[];
+
+  document.getElementById('wb-orders').innerHTML=`
+    <div class="card">
+      <div class="banner orange">📦 Weekly orders — ${wk}</div>
+      <div class="al alw" style="font-size:11px">Enter units ordered per household. Order total auto-calculates. Week: <strong>${wk}</strong></div>
+      ${members.length===0?'<div class="muted center" style="padding:1rem">Add members first in the Members tab.</div>':
+      `<div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr><th>Household</th>${prods.map(p=>`<th style="font-size:10px">${p.name.split(' ').slice(-1)[0]}<br>${p.unit}</th>`).join('')}<th>Total (Ksh)</th></tr></thead>
+          <tbody>${members.map((m,mi)=>{
+            const existing=orders.find(o=>o.week===wk&&o.member===m.name)||{items:{}};
+            const rowTotal=prods.reduce((a,p,pi)=>{
+              const qty=existing.items[pi]||0;
+              return a+qty*(p.bulk*(1+(S.finance.martMargin/100)));
+            },0);
+            return `<tr>
+              <td style="font-weight:600;font-size:11px">${m.name}</td>
+              ${prods.map((p,pi)=>`<td><input type="number" min="0" value="${existing.items[pi]||''}" style="width:36px;text-align:center" onchange="saveOrder('${m.name}',${pi},this.value,'${wk}')"></td>`).join('')}
+              <td style="font-weight:700;color:var(--g);font-size:11px">${fmtKsh(Math.round(rowTotal))}</td>
+            </tr>`;}).join('')}
+          </tbody>
+          <tfoot><tr style="background:var(--g)"><td style="color:#fff;font-weight:700;font-size:11px">TOTALS</td>${prods.map((_,pi)=>`<td style="color:var(--gold);font-weight:700;text-align:center;font-size:11px">${(orders.filter(o=>o.week===wk).reduce((a,o)=>a+(o.items[pi]||0),0))||''}</td>`).join('')}<td style="color:var(--gold);font-weight:700;font-size:11px">${fmtKsh(Math.round(orders.filter(o=>o.week===wk).reduce((a,o)=>a+o.total,0)))}</td></tr></tfoot>
+        </table>
+      </div>`}
+    </div>`;
+}
+
+function saveOrder(member,prodIdx,qty,week){
+  if(!S.orders) S.orders=[];
+  let order=S.orders.find(o=>o.week===week&&o.member===member);
+  if(!order){order={week,member,items:{},total:0};S.orders.push(order);}
+  order.items[prodIdx]=+qty||0;
+  order.total=S.products.reduce((a,p,pi)=>{
+    const unitPrice=p.bulk*(1+(S.finance.martMargin/100));
+    return a+(order.items[pi]||0)*unitPrice;
+  },0);
+  sv('mm_S',S);
+}
+
+// Delivery
+function renderDelivery(){
+  const wk=currentWeek();
+  const members=(S.members||[]).filter(m=>m.status==='Active');
+  const orders=(S.orders||[]).filter(o=>o.week===wk&&o.total>0);
+  const riders=S.estate.bodaRiders||['Rider 1','Rider 2','Rider 3'];
+  if(!S.deliveries) S.deliveries=[];
+
+  document.getElementById('wb-delivery').innerHTML=`
+    <div class="card">
+      <div class="banner blue">🏍️ Delivery tracker — ${wk}</div>
+      <div class="mg2" style="margin-bottom:.65rem">
+        <div class="m"><div class="mv">${(S.deliveries||[]).filter(d=>d.week===wk&&d.status==='Delivered').length}</div><div class="ml">delivered this week</div></div>
+        <div class="m"><div class="mv">${fmtKsh((S.deliveries||[]).filter(d=>d.week===wk&&d.status==='Delivered').length*S.boda.feePerDrop)}</div><div class="ml">rider fees earned</div></div>
+      </div>
+      ${members.length===0?'<div class="muted center" style="padding:1rem">Add members first.</div>':
+      `<div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Household</th><th>Apt</th><th>Order Value</th><th>Rider</th><th>Status</th><th>Fee</th></tr></thead>
+        <tbody>${members.map(m=>{
+          const order=orders.find(o=>o.member===m.name);
+          if(!order||order.total===0) return '';
+          let del=(S.deliveries||[]).find(d=>d.week===wk&&d.member===m.name);
+          if(!del){del={week:wk,member:m.name,rider:'',status:'Pending',fee:0};S.deliveries.push(del);sv('mm_S',S);}
+          return `<tr>
+            <td style="font-weight:600;font-size:11px">${m.name}</td>
+            <td style="font-size:11px">${m.apt||'—'}</td>
+            <td style="font-size:11px;color:var(--g);font-weight:600">${fmtKsh(Math.round(order.total))}</td>
+            <td><select style="font-size:11px;padding:2px 4px" onchange="saveDelivery('${m.name}','${wk}','rider',this.value)">
+              <option value="">Assign…</option>
+              ${(S.estate.bodaRiders||['Rider 1','Rider 2']).map(r=>`<option ${del.rider===r?'selected':''}>${r}</option>`).join('')}
+            </select></td>
+            <td><select style="font-size:11px;padding:2px 4px" onchange="saveDelivery('${m.name}','${wk}','status',this.value)">
+              ${['Pending','Delivered','Failed','Rescheduled'].map(s=>`<option ${del.status===s?'selected':''}>${s}</option>`).join('')}
+            </select></td>
+            <td style="font-size:11px;font-weight:700;color:var(--g)">${del.status==='Delivered'?'Ksh '+S.boda.feePerDrop:'—'}</td>
+          </tr>`;}).join('')}
+        </tbody>
+      </table></div>`}
+    </div>`;
+}
+
+function saveDelivery(member,week,key,val){
+  if(!S.deliveries) S.deliveries=[];
+  let del=S.deliveries.find(d=>d.week===week&&d.member===member);
+  if(!del){del={week,member,rider:'',status:'Pending',fee:0};S.deliveries.push(del);}
+  del[key]=val;
+  if(key==='status') del.fee=val==='Delivered'?S.boda.feePerDrop:0;
+  sv('mm_S',S);
+  renderDelivery();
+}
+
+// P&L
+function renderPL(){
+  const wk=currentWeek();
+  const fi=S.finance, bo=S.boda;
+  const wkOrders=(S.orders||[]).filter(o=>o.week===wk);
+  const gmv=wkOrders.reduce((a,o)=>a+o.total,0)||fi.weeklyGMV;
+  const memberSaving=gmv*fi.memberSaving/100;
+  const netRev=gmv-memberSaving;
+  const bulkCost=gmv*(1-fi.martMargin/100-fi.memberSaving/100);
+  const grossMargin=netRev-bulkCost;
+  const bodaFees=(S.deliveries||[]).filter(d=>d.week===wk&&d.status==='Delivered').length*bo.feePerDrop;
+  const opsReserve=grossMargin*fi.opsCostReserve/100;
+  const netSurplus=grossMargin-bodaFees-opsReserve;
+  const divPool=netSurplus*fi.dividendPool/100;
+  const retained=netSurplus-divPool;
+  const annNS=netSurplus*52;
+  const annDiv=annNS*fi.dividendPool/100;
+
+  function plRow(label,val,bold,color){
+    const c=color||'var(--tx)';
+    const w=bold?'font-weight:700':'';
+    return `<div class="lr" style="${w}">
+      <span style="flex:1;font-size:12px">${label}</span>
+      <span style="font-size:13px;color:${c}">${val>=0?'':'-'}${fmtKsh(Math.abs(val))}</span>
+    </div>`;
+  }
+
+  document.getElementById('wb-pl').innerHTML=`
+    <div class="card">
+      <div class="banner">💰 Weekly P&L — ${wk}</div>
+      <div style="font-size:11px;font-weight:700;color:var(--g);margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.05em">Revenue</div>
+      ${plRow('Gross Merchandise Value (GMV)',gmv,false,'var(--g)')}
+      ${plRow('Less: Member savings pass-through (-'+fi.memberSaving+'%)',-memberSaving,false,'')}
+      ${plRow('Net Revenue',netRev,true,'var(--g)')}
+      <div class="divider"></div>
+      <div style="font-size:11px;font-weight:700;color:var(--g);margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.05em">Cost of goods</div>
+      ${plRow('Bulk purchase cost',-bulkCost,false,'')}
+      ${plRow('Gross Margin',grossMargin,true,'var(--g)')}
+      <div class="divider"></div>
+      <div style="font-size:11px;font-weight:700;color:var(--g);margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.05em">Operating expenses</div>
+      ${plRow('Boda boda delivery fees',-bodaFees,false,'')}
+      ${plRow('Ops cost reserve (-'+fi.opsCostReserve+'% of margin)',-opsReserve,false,'')}
+      ${plRow('Total Operating Expenses',-(bodaFees+opsReserve),true,'var(--red)')}
+      <div class="divider"></div>
+      ${plRow('NET WEEKLY SURPLUS',netSurplus,true,netSurplus>=0?'var(--g)':'var(--red)')}
+      <div class="divider"></div>
+      <div style="font-size:11px;font-weight:700;color:var(--g);margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.05em">Surplus allocation</div>
+      ${plRow('Dividend pool ('+fi.dividendPool+'% → co-owners at AGM)',divPool,false,'var(--g)')}
+      ${plRow('Retained for operations & growth',retained,false,'')}
+    </div>
+    <div class="card">
+      <div class="banner">📈 52-week projection at current run rate</div>
+      ${[['Annualised GMV',gmv*52],['Annualised gross margin',grossMargin*52],['Annualised net surplus',annNS],['Annualised dividend pool',annDiv]].map(([l,v])=>`<div class="lr"><span style="flex:1;font-size:12px">${l}</span><span style="font-weight:700;color:var(--g)">${fmtKsh(Math.round(v))}</span></div>`).join('')}
+    </div>`;
+}
+
+// Hisa Ledger
+function hisaTotal(name){
+  const hl=S.hisaLedger||[];
+  const entry=hl.find(h=>h.name===name);
+  if(!entry) return 0;
+  const hi=S.hisa;
+  return (entry.referral||0)*hi.referral+(entry.loyalty90||0)*hi.loyalty90+(entry.supplier||0)*hi.supplierRecruited+(entry.complaint||0)*hi.complaintResolved+(entry.other||0);
+}
+
+function renderHisaLedger(){
+  const members=S.members||[];
+  if(!S.hisaLedger) S.hisaLedger=[];
+  // Ensure every member has a ledger entry
+  members.forEach(m=>{if(!S.hisaLedger.find(h=>h.name===m.name)) S.hisaLedger.push({name:m.name,referral:0,loyalty90:0,supplier:0,complaint:0,other:0});});
+  const hi=S.hisa;
+
+  document.getElementById('wb-hisa').innerHTML=`
+    <div class="card">
+      <div class="banner gold">⭐ Hisa ledger — co-ownership points</div>
+      <div class="al alg" style="font-size:11px">Hisa threshold: <strong>${hi.threshold}</strong> units = Co-Owner status. Edit values directly in the table.</div>
+      ${members.length===0?'<div class="muted center" style="padding:1rem">Add members first.</div>':
+      `<div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Member</th><th>Referrals<br><small>×${hi.referral}</small></th><th>90-day<br><small>×${hi.loyalty90}</small></th><th>Supplier<br><small>×${hi.supplierRecruited}</small></th><th>Complaint<br><small>×${hi.complaintResolved}</small></th><th>Other</th><th>TOTAL</th><th>Status</th></tr></thead>
+        <tbody>${members.map(m=>{
+          let entry=S.hisaLedger.find(h=>h.name===m.name)||{referral:0,loyalty90:0,supplier:0,complaint:0,other:0};
+          const tot=hisaTotal(m.name);
+          const isCoOwner=tot>=hi.threshold;
+          return `<tr>
+            <td style="font-weight:600;font-size:11px">${m.name}</td>
+            ${['referral','loyalty90','supplier','complaint','other'].map(f=>`<td><input type="number" min="0" value="${entry[f]||0}" style="width:36px;text-align:center" onchange="saveHisa('${m.name}','${f}',this.value)"></td>`).join('')}
+            <td style="font-weight:800;font-size:13px;color:${isCoOwner?'var(--gold)':'var(--g)'};background:${isCoOwner?'var(--g)':'transparent'};text-align:center">${tot}</td>
+            <td><span class="badge ${isCoOwner?'bg':'bgold'}" style="font-size:10px">${isCoOwner?'✅ Co-Owner':'⏳ '+tot+'/'+hi.threshold}</span></td>
+          </tr>`;}).join('')}
+        </tbody>
+      </table></div>`}
+    </div>`;
+}
+
+function saveHisa(name,field,val){
+  if(!S.hisaLedger) S.hisaLedger=[];
+  let entry=S.hisaLedger.find(h=>h.name===name);
+  if(!entry){entry={name,referral:0,loyalty90:0,supplier:0,complaint:0,other:0};S.hisaLedger.push(entry);}
+  entry[field]=+val||0;
+  sv('mm_S',S);
+}
+
+// Dividend
+function renderDividend(){
+  const members=S.members||[];
+  const fi=S.finance;
+  const hi=S.hisa;
+  const coOwners=members.filter(m=>hisaTotal(m.name)>=hi.threshold);
+  const wk=currentWeek();
+  const wkOrders=(S.orders||[]).filter(o=>o.week===wk);
+  const wkGMV=wkOrders.reduce((a,o)=>a+o.total,0)||fi.weeklyGMV;
+  const wkGM=wkGMV*fi.martMargin/100;
+  const wkBoda=((S.deliveries||[]).filter(d=>d.week===wk&&d.status==='Delivered').length)*S.boda.feePerDrop;
+  const wkOps=wkGM*fi.opsCostReserve/100;
+  const wkNet=wkGM-wkBoda-wkOps;
+  const annualPool=Math.round(wkNet*52*fi.dividendPool/100);
+
+  // Annual purchase volumes (sum of all orders per member)
+  const memberVolumes={};
+  (S.orders||[]).forEach(o=>{memberVolumes[o.member]=(memberVolumes[o.member]||0)+o.total;});
+  const totalVol=coOwners.reduce((a,m)=>a+(memberVolumes[m.name]||0),0)||1;
+
+  document.getElementById('wb-dividend').innerHTML=`
+    <div class="card">
+      <div class="banner">🎁 Year-end dividend calculator</div>
+      <div class="mg2" style="margin-bottom:.65rem">
+        <div class="m"><div class="mv">${fmtKsh(annualPool)}</div><div class="ml">annual dividend pool</div></div>
+        <div class="m"><div class="mv">${coOwners.length}</div><div class="ml">co-owners</div></div>
+      </div>
+      ${coOwners.length===0?'<div class="al alw">No Co-Owners yet. Members need '+hi.threshold+' Hisa to qualify. Update the Hisa Ledger tab.</div>':
+      `<div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>#</th><th>Co-Owner</th><th>Hisa</th><th>Annual Purchase Vol (Ksh)</th><th>Share %</th><th>Dividend (Ksh)</th><th>Status</th></tr></thead>
+        <tbody>${coOwners.map((m,i)=>{
+          const vol=memberVolumes[m.name]||0;
+          const share=vol/totalVol;
+          const dividend=Math.round(annualPool*share);
+          return `<tr>
+            <td>${i+1}</td>
+            <td style="font-weight:700;font-size:11px">${m.name}</td>
+            <td style="text-align:center;font-weight:700;color:var(--g)">${hisaTotal(m.name)}</td>
+            <td style="text-align:right">${fmtKsh(Math.round(vol))}</td>
+            <td style="text-align:center">${(share*100).toFixed(1)}%</td>
+            <td style="text-align:right;font-weight:800;color:var(--g)">${fmtKsh(dividend)}</td>
+            <td><span class="badge bg-" style="font-size:10px">Pending</span></td>
+          </tr>`;}).join('')}
+        </tbody>
+        <tfoot><tr style="background:var(--g)">
+          <td colspan="3" style="color:#fff;font-weight:700;font-size:11px">TOTAL</td>
+          <td style="color:var(--gold);font-weight:700;text-align:right">${fmtKsh(Math.round(coOwners.reduce((a,m)=>a+(memberVolumes[m.name]||0),0)))}</td>
+          <td style="color:var(--gold);font-weight:700;text-align:center">100%</td>
+          <td style="color:var(--gold);font-weight:800;text-align:right">${fmtKsh(annualPool)}</td>
+          <td></td>
+        </tr></tfoot>
+      </table></div>`}
+    </div>`;
+}
+
+// Nodes
+function renderNodes(){
+  if(!S.nodes) S.nodes=[];
+  document.getElementById('wb-nodes').innerHTML=`
+    <div class="card">
+      <div class="banner">🌍 Network nodes — estate expansion</div>
+      <div class="mg2" style="margin-bottom:.65rem">
+        <div class="m"><div class="mv">${(S.nodes||[]).filter(n=>n.status==='Active').length+1}</div><div class="ml">total active nodes</div></div>
+        <div class="m"><div class="mv">${fmtKsh(Math.round(((S.nodes||[]).filter(n=>n.status==='Active').reduce((a,n)=>a+n.gmv,0)+S.finance.weeklyGMV)*S.finance.networkFee/100))}</div><div class="ml">network fee /week</div></div>
+      </div>
+      <div class="brow" style="margin-bottom:.65rem;flex-wrap:wrap">
+        <input type="text" id="nd-name" placeholder="Estate name" style="flex:1;min-width:120px">
+        <input type="text" id="nd-loc" placeholder="Sub-county" style="flex:1;min-width:100px">
+        <input type="number" id="nd-gmv" placeholder="Weekly GMV" style="width:110px">
+        <button class="btn bsm bp" onclick="addNode()">+ Add node</button>
+      </div>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>#</th><th>Estate</th><th>Location</th><th>Weekly GMV</th><th>Network Fee (${S.finance.networkFee}%)</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          <tr style="background:var(--gp)"><td>1</td><td style="font-weight:700">${S.estate.name} ★ HOME</td><td>${S.estate.location}</td><td>${fmtKsh(S.finance.weeklyGMV)}</td><td style="color:var(--g);font-weight:700">—</td><td><span class="badge bg-">Active</span></td><td></td></tr>
+          ${(S.nodes||[]).map((n,i)=>`<tr>
+            <td>${i+2}</td>
+            <td style="font-weight:600;font-size:11px">${n.name}</td>
+            <td style="font-size:11px">${n.location||'—'}</td>
+            <td style="text-align:right">${fmtKsh(n.gmv||0)}</td>
+            <td style="text-align:right;font-weight:700;color:var(--g)">${fmtKsh(Math.round((n.gmv||0)*S.finance.networkFee/100))}</td>
+            <td><select style="font-size:11px;padding:2px 4px" onchange="editNode(${i},'status',this.value)">
+              ${['Active','Onboarding','Paused','Inactive'].map(s=>`<option ${n.status===s?'selected':''}>${s}</option>`).join('')}
+            </select></td>
+            <td><button onclick="removeNode(${i})" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:14px">✕</button></td>
+          </tr>`).join('')}
+        </tbody>
+      </table></div>
+    </div>`;
+}
+
+function addNode(){
+  const name=document.getElementById('nd-name').value.trim();
+  const location=document.getElementById('nd-loc').value.trim();
+  const gmv=+document.getElementById('nd-gmv').value||0;
+  if(!name){toast('Enter estate name');return;}
+  if(!S.nodes) S.nodes=[];
+  S.nodes.push({name,location,gmv,status:'Onboarding',launched:new Date().toISOString().split('T')[0]});
+  sv('mm_S',S);
+  ['nd-name','nd-loc','nd-gmv'].forEach(id=>document.getElementById(id).value='');
+  renderNodes();
+  toast('Node added');
+}
+
+function editNode(i,key,val){
+  S.nodes[i][key]=val;sv('mm_S',S);
+}
+
+function removeNode(i){
+  if(!confirm('Remove this node?'))return;
+  S.nodes.splice(i,1);sv('mm_S',S);renderNodes();
+}
+
+// ═══════════════════════════════════════════════════════
 // SURVEY
-// ══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 function buildSurveyLists(){
-  const prodDiv=document.getElementById('sv-products');
-  prodDiv.innerHTML='';
+  const pd=document.getElementById('sv-products');
+  pd.innerHTML='';
   S.products.forEach((p,i)=>{
-    const label=`${p.name} ${p.unit}`;
-    prodDiv.innerHTML+=checkItem('sv-p-'+i, label);
+    const id='svp'+i;
+    pd.innerHTML+=`<label class="ci" for="${id}" onclick="toggleCi(this)"><input type="checkbox" id="${id}" style="display:none"><span class="cb"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span><span style="font-size:11px">${p.name} ${p.unit}</span></label>`;
   });
-  const svcDiv=document.getElementById('sv-services');
-  svcDiv.innerHTML='';
+  const sd=document.getElementById('sv-services');
+  sd.innerHTML='';
   S.services.forEach((s,i)=>{
-    svcDiv.innerHTML+=checkItem('sv-s-'+i, s);
-  });
-  document.querySelectorAll('.check-item').forEach(el=>{
-    el.addEventListener('click',function(){
-      const cb=this.querySelector('input[type=checkbox]');
-      cb.checked=!cb.checked;
-      this.classList.toggle('on',cb.checked);
-    });
+    const id='svs'+i;
+    sd.innerHTML+=`<label class="ci" for="${id}" onclick="toggleCi(this)"><input type="checkbox" id="${id}" style="display:none"><span class="cb"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span><span style="font-size:11px">${s}</span></label>`;
   });
 }
 
-function checkItem(id, label){
-  return `<label class="check-item" for="${id}">
-    <input type="checkbox" id="${id}" style="display:none">
-    <span class="check-box"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
-    <span>${label}</span></label>`;
+function toggleCi(el){
+  const cb=el.querySelector('input[type=checkbox]');
+  cb.checked=!cb.checked;el.classList.toggle('on',cb.checked);
 }
 
-function getCheckedVals(prefix){
+function getChecked(prefix){
   return [...document.querySelectorAll(`[id^="${prefix}"]:checked`)].map(c=>c.id.replace(prefix,''));
 }
 
@@ -862,37 +1458,38 @@ function submitSurvey(){
   const size=document.getElementById('sv-size').value;
   const budget=document.getElementById('sv-budget').value;
   const gas=document.getElementById('sv-gas').value;
-  const gasR=document.getElementById('sv-gas-refills').value;
+  const gasR=+document.getElementById('sv-gr').value;
   const other=document.getElementById('sv-other').value.trim();
-  const prodIdxs=getCheckedVals('sv-p-');
-  const svcIdxs=getCheckedVals('sv-s-');
-  const prodNames=prodIdxs.map(i=>S.products[+i]?`${S.products[+i].name} ${S.products[+i].unit}`:'');
-  const svcNames=svcIdxs.map(i=>S.services[+i]||'');
-  const items=[...prodNames,...svcNames].filter(Boolean);
+  const prodIdxs=getChecked('svp');
+  const svcIdxs=getChecked('svs');
+  const items=[
+    ...prodIdxs.map(i=>S.products[+i]?`${S.products[+i].name} ${S.products[+i].unit}`:'').filter(Boolean),
+    ...svcIdxs.map(i=>S.services[+i]||'').filter(Boolean)
+  ];
   if(!size&&!budget&&items.length===0){toast('Please select at least one item or household size');return;}
-  surveys.push({size,budget,gas,gasRefills:+gasR,items,other,ts:Date.now()});
-  save('mm_surveys',surveys);
-  document.getElementById('survey-form-wrap').style.display='none';
-  document.getElementById('survey-thanks').style.display='block';
+  surveys.push({size,budget,gas,gasR,items,other,ts:Date.now()});
+  sv('mm_sv',surveys);
+  document.getElementById('sv-form').style.display='none';
+  document.getElementById('sv-thanks').style.display='block';
 }
 
 function clearSurvey(){
-  document.querySelectorAll('#page-survey input[type=checkbox]').forEach(c=>{c.checked=false;c.closest('label')&&c.closest('label').classList.remove('on');});
-  ['sv-size','sv-budget','sv-gas'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('sv-gas-refills').value=1;
-  document.getElementById('sv-gas-val').textContent='1';
-  document.getElementById('sv-other').value='';
+  document.querySelectorAll('#pg-survey input[type=checkbox]').forEach(c=>{c.checked=false;c.closest&&c.closest('label')&&c.closest('label').classList.remove('on');});
+  ['sv-size','sv-budget','sv-gas'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  const gr=document.getElementById('sv-gr');if(gr){gr.value=1;}
+  const gv=document.getElementById('sv-gv');if(gv){gv.textContent='1';}
+  const ot=document.getElementById('sv-other');if(ot)ot.value='';
 }
 
 function anotherSurvey(){
   clearSurvey();
-  document.getElementById('survey-form-wrap').style.display='block';
-  document.getElementById('survey-thanks').style.display='none';
+  document.getElementById('sv-form').style.display='block';
+  document.getElementById('sv-thanks').style.display='none';
 }
 
-// ══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // SIGN-UP
-// ══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 const COMMITS=[
   'Share my typical weekly shopping list (items & quantities)',
   'Indicate average monthly spend per category',
@@ -902,17 +1499,10 @@ const COMMITS=[
 ];
 
 function buildSignupCommits(){
-  const el=document.getElementById('su-commits');
-  el.innerHTML=COMMITS.map((c,i)=>checkItem('su-c-'+i,c)).join('');
-  el.querySelectorAll('.check-item').forEach(el=>{
-    el.addEventListener('click',function(){
-      const cb=this.querySelector('input[type=checkbox]');
-      cb.checked=!cb.checked;
-      this.classList.toggle('on',cb.checked);
-    });
-    // pre-check all
-    const cb=el.querySelector('input');cb.checked=true;el.classList.add('on');
-  });
+  document.getElementById('su-commits').innerHTML=COMMITS.map((c,i)=>{
+    const id='suc'+i;
+    return `<label class="ci on" for="${id}" onclick="toggleCi(this)"><input type="checkbox" id="${id}" checked style="display:none"><span class="cb"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span><span style="font-size:11px">${c}</span></label>`;
+  }).join('');
 }
 
 function submitSignup(){
@@ -921,27 +1511,27 @@ function submitSignup(){
   const role=document.getElementById('su-role').value;
   const note=document.getElementById('su-note').value.trim();
   if(!name||!role){toast('Please enter your name and select your role');return;}
-  const commits=COMMITS.filter((_,i)=>document.getElementById('su-c-'+i)?.checked);
+  const commits=COMMITS.filter((_,i)=>document.getElementById('suc'+i)?.checked);
   signups.push({name,phone,role,commits,note,ts:Date.now()});
-  save('mm_signups',signups);
-  document.getElementById('signup-form-wrap').style.display='none';
-  document.getElementById('su-thanks-name').textContent='Signed up — '+name;
-  document.getElementById('signup-thanks').style.display='block';
+  sv('mm_su',signups);
+  document.getElementById('su-form').style.display='none';
+  document.getElementById('su-tname').textContent='Signed up — '+name;
+  document.getElementById('su-thanks').style.display='block';
 }
 
 function anotherSignup(){
-  ['su-name','su-phone','su-note'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('su-role').value='';
-  document.getElementById('signup-form-wrap').style.display='block';
-  document.getElementById('signup-thanks').style.display='none';
+  ['su-name','su-phone','su-note'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  const sr=document.getElementById('su-role');if(sr)sr.value='';
+  document.getElementById('su-form').style.display='block';
+  document.getElementById('su-thanks').style.display='none';
 }
 
-// ══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // RESULTS
-// ══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 function renderResults(){
-  const empty=document.getElementById('results-empty');
-  const content=document.getElementById('results-content');
+  const empty=document.getElementById('res-empty');
+  const content=document.getElementById('res-content');
   if(surveys.length===0&&signups.length===0){empty.style.display='block';content.style.display='none';return;}
   empty.style.display='none';content.style.display='block';
 
@@ -949,329 +1539,353 @@ function renderResults(){
   const freq={};allItems.forEach(i=>{freq[i]=(freq[i]||0)+1;});
   const sorted=Object.entries(freq).sort((a,b)=>b[1]-a[1]);
   const n=surveys.length;
-  const wGMV=Math.round(n*S.finance.weeklyGMV/S.estate.households);
+  const wGMV=Math.round(n*(S.finance.weeklyGMV/S.estate.households));
 
   document.getElementById('r-metrics').innerHTML=`
-    <div class="metric"><div class="metric-val">${n}</div><div class="metric-label">survey responses</div></div>
-    <div class="metric"><div class="metric-val">${signups.length}</div><div class="metric-label">stakeholders signed up</div></div>
-    <div class="metric"><div class="metric-val">${sorted.length}</div><div class="metric-label">products demanded</div></div>
-    <div class="metric"><div class="metric-val">Ksh ${fmt(wGMV)}</div><div class="metric-label">est. weekly GMV</div></div>`;
+    <div class="m"><div class="mv">${n}</div><div class="ml">survey responses</div></div>
+    <div class="m"><div class="mv">${signups.length}</div><div class="ml">signed up</div></div>
+    <div class="m"><div class="mv">${sorted.length}</div><div class="ml">products demanded</div></div>
+    <div class="m"><div class="mv">${fmtKsh(wGMV)}</div><div class="ml">est. weekly GMV</div></div>`;
 
-  const top=sorted.slice(0,12);
-  const maxF=top[0]?top[0][1]:1;
-  document.getElementById('r-top-items').innerHTML=top.map(([item,count])=>`
-    <div class="bar-row">
-      <span class="bar-label">${item}</span>
-      <div class="bar-bg"><div class="bar-fill" style="width:${Math.round(count/maxF*100)}%"></div></div>
-      <span class="bar-pct">${Math.round(count/Math.max(n,1)*100)}%</span>
-    </div>`).join('')||(n===0?'<div class="muted">No data yet</div>':'');
+  const top=sorted.slice(0,10);
+  const mxF=top[0]?top[0][1]:1;
+  document.getElementById('r-items').innerHTML=top.map(([item,count])=>`
+    <div class="bar">
+      <span class="blab">${item}</span>
+      <div class="bbg"><div class="bfill" style="width:${Math.round(count/mxF*100)}%"></div></div>
+      <span class="bpct">${Math.round(count/Math.max(n,1)*100)}%</span>
+    </div>`).join('')||(n===0?'<div class="muted">No survey data yet.</div>':'');
 
-  const sizes=['1 person','2 people','3–4 people','5–6 people','7+ people'];
-  const sMap=Object.fromEntries(sizes.map(s=>[s,0]));
-  surveys.forEach(s=>{if(sMap[s.size]!==undefined)sMap[s.size]++;});
-  const sMax=Math.max(...Object.values(sMap),1);
-  document.getElementById('r-sizes').innerHTML=sizes.map(s=>`
-    <div class="bar-row">
-      <span class="bar-label">${s}</span>
-      <div class="bar-bg"><div class="bar-fill" style="width:${Math.round(sMap[s]/sMax*100)}%"></div></div>
-      <span class="bar-pct">${sMap[s]}</span>
-    </div>`).join('');
+  const szs=['1 person','2 people','3–4 people','5–6 people','7+ people'];
+  const sm=Object.fromEntries(szs.map(s=>[s,0]));
+  surveys.forEach(s=>{if(sm[s.size]!==undefined)sm[s.size]++;});
+  const smx=Math.max(...Object.values(sm),1);
+  document.getElementById('r-sizes').innerHTML=szs.map(s=>`<div class="bar"><span class="blab">${s}</span><div class="bbg"><div class="bfill" style="width:${Math.round(sm[s]/smx*100)}%"></div></div><span class="bpct">${sm[s]}</span></div>`).join('');
 
-  const budgets=['Under 3,000','3,000–6,000','6,000–10,000','10,000–15,000','15,000+'];
-  const bMap=Object.fromEntries(budgets.map(b=>[b,0]));
-  surveys.forEach(s=>{if(bMap[s.budget]!==undefined)bMap[s.budget]++;});
-  const bMax=Math.max(...Object.values(bMap),1);
-  document.getElementById('r-budgets').innerHTML=budgets.map(b=>`
-    <div class="bar-row">
-      <span class="bar-label">${b}</span>
-      <div class="bar-bg"><div class="bar-fill" style="width:${Math.round(bMap[b]/bMax*100)}%"></div></div>
-      <span class="bar-pct">${bMap[b]}</span>
-    </div>`).join('');
+  const bgs=['Under 3,000','3,000–6,000','6,000–10,000','10,000–15,000','15,000+'];
+  const bm=Object.fromEntries(bgs.map(b=>[b,0]));
+  surveys.forEach(s=>{if(bm[s.budget]!==undefined)bm[s.budget]++;});
+  const bmx=Math.max(...Object.values(bm),1);
+  document.getElementById('r-budgets').innerHTML=bgs.map(b=>`<div class="bar"><span class="blab">${b}</span><div class="bbg"><div class="bfill" style="width:${Math.round(bm[b]/bmx*100)}%"></div></div><span class="bpct">${bm[b]}</span></div>`).join('');
 
-  const roleColor={
-    'RA Chairman':'badge-blue','Secretary / Order Coordinator':'badge-blue','Treasurer / M-Pesa Custodian':'badge-blue',
-    'Boda boda delivery rider':'badge-gold','Household member / customer':'badge-green',
-    'Bulk supplier / distributor':'badge-gold','Node anchor (other estate)':'badge-blue',
-    'Committee member':'badge-blue','Interested — no role yet':'badge-green'
-  };
-  document.getElementById('r-signups').innerHTML=signups.length===0
-    ?'<div class="muted" style="padding:.5rem 0">No sign-ups yet.</div>'
-    :signups.map(s=>`<div class="list-row">
-        <div>
-          <div class="name">${s.name}</div>
-          <div style="font-size:11px;color:var(--text2)">${s.phone||'No phone given'}</div>
-        </div>
-        <span class="badge ${roleColor[s.role]||'badge-green'}" style="font-size:10px;white-space:nowrap">${s.role}</span>
-      </div>`).join('');
+  const rcolor={'RA Chairman':'bblue','Secretary / Order Coordinator':'bblue','Treasurer / M-Pesa Custodian':'bblue','Boda boda delivery rider':'bgold','Household member / customer':'bg-','Bulk supplier / distributor':'bgold','Node anchor (other estate)':'bblue','Committee member':'bblue','Interested — no role yet':'bg-'};
+  document.getElementById('r-signups').innerHTML=signups.length===0?'<div class="muted">No sign-ups yet.</div>':signups.map(s=>`<div class="lr"><div><div class="lrn">${s.name}</div><div class="muted">${s.phone||'No phone'}</div></div><span class="badge ${rcolor[s.role]||'bg-'}" style="font-size:10px;white-space:nowrap">${s.role}</span></div>`).join('');
 
   const wishes=surveys.map(s=>s.other).filter(Boolean);
   if(wishes.length){
     document.getElementById('r-wishes-card').style.display='block';
-    document.getElementById('r-wishes').innerHTML=wishes.map(w=>`<span style="background:var(--surface2);border:1px solid var(--border);border-radius:99px;padding:2px 10px;font-size:12px;color:var(--text2)">${w}</span>`).join('');
+    document.getElementById('r-wishes').innerHTML=wishes.map(w=>`<span style="background:var(--sf2);border:1px solid var(--bd);border-radius:99px;padding:2px 9px;font-size:11px;color:var(--tx2)">${w}</span>`).join('');
   }
 }
 
-// ══════════════════════════════════════════════════════════
-// EXPORT
-// ══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+// EXPORTS
+// ═══════════════════════════════════════════════════════
 function exportPitch(){
   const n=surveys.length;
   const allItems=surveys.flatMap(s=>s.items);
   const freq={};allItems.forEach(i=>{freq[i]=(freq[i]||0)+1;});
   const top=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,15);
-  const wGMV=Math.round(n*S.finance.weeklyGMV/S.estate.households);
+  const wGMV=Math.round(n*(S.finance.weeklyGMV/S.estate.households));
   const lines=[
     'MTAA MART — COMMUNITY DEMAND SURVEY BRIEF',
-    'Prepared for: Manufacturer / Distributor Negotiations',
-    '==================================================',
-    '',
-    `Estate: ${S.estate.name} — ${S.estate.location}`,
+    'For Manufacturer / Distributor Negotiations',
+    '=====================================================',
+    '',`Estate: ${S.estate.name} — ${S.estate.location}`,
     `RA Chairman: ${S.estate.chairman}`,
     `Date: ${new Date().toLocaleDateString('en-KE',{year:'numeric',month:'long',day:'numeric'})}`,
-    '',
-    'SURVEY SUMMARY',
-    `--------------`,
+    '','SURVEY SUMMARY','--------------',
     `Total survey responses: ${n}`,
     `Total stakeholders signed up: ${signups.length}`,
     `Target households: ${S.estate.households}`,
-    `Estimated weekly GMV at full membership: Ksh ${fmt(S.finance.weeklyGMV)}`,
-    `Estimated weekly GMV at current participation: Ksh ${fmt(wGMV)}`,
-    '',
-    'TOP DEMANDED PRODUCTS (by % of respondents)',
-    '-------------------------------------------',
-    ...top.map(([item,count])=>`  ${item}: ${Math.round(count/Math.max(n,1)*100)}% of respondents (${count} households)`),
-    '',
-    'WHAT WE OFFER MANUFACTURERS',
-    '----------------------------',
-    `  • 100% prepaid weekly orders — zero credit risk`,
-    `  • Minimum ${S.estate.households} households at launch, target ${S.estate.households*5} across 5 estates within 18 months`,
-    `  • Consolidated orders every Thursday — predictable, plannable volume`,
-    `  • Community loyalty — members have Hisa (co-ownership stake) in the business`,
-    `  • ${S.finance.networkFee}% network expansion — model replicates to new estates`,
-    '',
-    'WHAT WE REQUIRE',
-    '----------------',
-    `  • Minimum ${S.finance.bulkDiscount}% bulk discount below retail price`,
-    `  • Consistent quality and 48hr notice on out-of-stock items`,
-    `  • Delivery to estate depot or collection from distributor premises`,
-    '',
-    'STAKEHOLDER SIGN-UPS',
-    '---------------------',
-    ...signups.map(s=>`  • ${s.name} (${s.role}) — ${s.phone||'no phone given'}`),
-    '',
-    'COMMUNITY OPEN REQUESTS',
-    '-----------------------',
+    `Estimated weekly GMV: ${fmtKsh(S.finance.weeklyGMV)}`,
+    `Current participation GMV: ${fmtKsh(wGMV)}`,
+    '','TOP DEMANDED PRODUCTS','-------------------------------------------',
+    ...top.map(([item,count])=>`  ${item}: ${Math.round(count/Math.max(n,1)*100)}% of respondents`),
+    '','WHAT WE OFFER','--------------',
+    '  • 100% prepaid weekly orders — zero credit risk',
+    `  • ${S.estate.households} households at launch`,
+    `  • Minimum ${S.finance.bulkDiscount}% bulk discount required`,
+    '','STAKEHOLDER SIGN-UPS','---------------------',
+    ...signups.map(s=>`  • ${s.name} (${s.role}) — ${s.phone||'no phone'}`),
+    '','COMMUNITY OPEN REQUESTS','-----------------------',
     ...surveys.map(s=>s.other).filter(Boolean).map(w=>`  • ${w}`),
-    '',
-    '==================================================',
-    'Mtaa Mart is governed by the Co-operatives Act, Laws of Kenya.',
-    'Registration: [RA Registration Number]',
-    'M-Pesa Paybill: '+S.estate.paybill,
+    '=====================================================',
+    'Governed by the Co-operatives Act, Laws of Kenya.',
+    `M-Pesa Paybill: ${S.estate.paybill}`
   ];
-  download('MtaaMart_ManufacturerBrief.txt', lines.join('\n'));
+  dl('MtaaMart_ManufacturerBrief.txt',lines.join('\n'));
 }
 
-function exportSignups(){
+function exportSignupsCsv(){
   const rows=[['Name','Phone','Role','Note','Date'],...signups.map(s=>[s.name,s.phone,s.role,s.note,new Date(s.ts).toLocaleDateString()])];
-  download('MtaaMart_Signups.csv', rows.map(r=>r.map(v=>`"${(v||'').replace(/"/g,'""')}"`).join(',')).join('\n'));
+  dl('MtaaMart_Signups.csv',rows.map(r=>r.map(v=>`"${(v||'').replace(/"/g,'""')}"`).join(',')).join('\n'));
 }
 
-function download(filename, content){
+function exportExcel(){
+  if(typeof XLSX==='undefined'){toast('Excel library loading — try again in a moment');return;}
+  const wb2=XLSX.utils.book_new();
+
+  // Dashboard summary sheet
+  const dashData=[
+    ['MTAA MART — WORKBOOK EXPORT'],
+    ['Estate',S.estate.name],['Location',S.estate.location],
+    ['Chairman',S.estate.chairman],['Paybill',S.estate.paybill],
+    ['Export date',new Date().toLocaleDateString('en-KE')],
+    [],
+    ['LIVE KPIs'],
+    ['Active Members',(S.members||[]).filter(m=>m.status==='Active').length],
+    ['Total Hisa Issued',(S.hisaLedger||[]).reduce((a,h)=>a+(hisaTotal(h.name)||0),0)],
+    ['Co-Owners',(S.members||[]).filter(m=>hisaTotal(m.name)>=S.hisa.threshold).length],
+    ['Weekly GMV (est)',S.finance.weeklyGMV],
+  ];
+  XLSX.utils.book_append_sheet(wb2,XLSX.utils.aoa_to_sheet(dashData),'Dashboard');
+
+  // Members
+  const memHdr=['#','Name','Apartment','Phone','Status','Date Joined','Hisa Balance','Co-Owner?'];
+  const memRows=(S.members||[]).map((m,i)=>[i+1,m.name,m.apt||'',m.phone||'',m.status||'Active',m.joined||'',hisaTotal(m.name),hisaTotal(m.name)>=S.hisa.threshold?'Co-Owner':'Member']);
+  XLSX.utils.book_append_sheet(wb2,XLSX.utils.aoa_to_sheet([memHdr,...memRows]),'Member Register');
+
+  // Product Catalogue
+  const prodHdr=['#','Product','Unit','Category','Retail (Ksh)','Bulk (Ksh)','Mart Price (Ksh)','Bulk Discount %','Mart Margin %'];
+  const martMargin=S.finance.martMargin/100;
+  const prodRows=S.products.map((p,i)=>[i+1,p.name,p.unit,'Staples',p.retail,p.bulk,Math.round(p.bulk*(1+martMargin)),((p.retail-p.bulk)/p.retail*100).toFixed(1)+'%',(martMargin*100).toFixed(1)+'%']);
+  XLSX.utils.book_append_sheet(wb2,XLSX.utils.aoa_to_sheet([prodHdr,...prodRows]),'Product Catalogue');
+
+  // Weekly Orders
+  const wk=currentWeek();
+  const prodNames=S.products.map(p=>`${p.name} ${p.unit}`);
+  const ordHdr=['Member','Apartment',...prodNames,'Total (Ksh)'];
+  const ordRows=(S.members||[]).map(m=>{
+    const order=(S.orders||[]).find(o=>o.week===wk&&o.member===m.name)||{items:{}};
+    const qtys=S.products.map((_,pi)=>order.items[pi]||0);
+    return [m.name,m.apt||'',...qtys,Math.round(order.total||0)];
+  });
+  XLSX.utils.book_append_sheet(wb2,XLSX.utils.aoa_to_sheet([['Week: '+wk],[],ordHdr,...ordRows]),'Weekly Orders');
+
+  // Delivery Tracker
+  const delHdr=['Member','Apartment','Rider','Status','Delivery Fee (Ksh)','Order Value (Ksh)'];
+  const delRows=(S.deliveries||[]).filter(d=>d.week===wk).map(d=>{
+    const m=(S.members||[]).find(mb=>mb.name===d.member)||{};
+    const order=(S.orders||[]).find(o=>o.week===wk&&o.member===d.member)||{total:0};
+    return [d.member,m.apt||'',d.rider||'',d.status||'Pending',d.fee||0,Math.round(order.total||0)];
+  });
+  XLSX.utils.book_append_sheet(wb2,XLSX.utils.aoa_to_sheet([['Week: '+wk],[],delHdr,...delRows]),'Delivery Tracker');
+
+  // Weekly P&L
+  const wkOrds=(S.orders||[]).filter(o=>o.week===wk);
+  const gmv=wkOrds.reduce((a,o)=>a+o.total,0)||S.finance.weeklyGMV;
+  const ms=gmv*S.finance.memberSaving/100;
+  const nr=gmv-ms;
+  const bc=gmv*(1-S.finance.martMargin/100-S.finance.memberSaving/100);
+  const gm=nr-bc;
+  const bf=(S.deliveries||[]).filter(d=>d.week===wk&&d.status==='Delivered').length*S.boda.feePerDrop;
+  const ops=gm*S.finance.opsCostReserve/100;
+  const ns=gm-bf-ops;
+  const dp=ns*S.finance.dividendPool/100;
+  const plData=[
+    ['WEEKLY P&L — '+wk],[],
+    ['GMV (Member Orders)',Math.round(gmv)],
+    ['Less: Member Savings',-Math.round(ms)],
+    ['Net Revenue',Math.round(nr)],
+    ['Bulk Purchase Cost',-Math.round(bc)],
+    ['GROSS MARGIN',Math.round(gm)],
+    ['Boda Boda Fees',-Math.round(bf)],
+    ['Ops Cost Reserve',-Math.round(ops)],
+    ['NET SURPLUS',Math.round(ns)],
+    ['Dividend Pool ('+S.finance.dividendPool+'%)',Math.round(dp)],
+    ['Retained',Math.round(ns-dp)],
+    [],['52-WEEK PROJECTION'],
+    ['Annual GMV',Math.round(gmv*52)],
+    ['Annual Net Surplus',Math.round(ns*52)],
+    ['Annual Dividend Pool',Math.round(dp*52)]
+  ];
+  XLSX.utils.book_append_sheet(wb2,XLSX.utils.aoa_to_sheet(plData),'Weekly P&L');
+
+  // Hisa Ledger
+  const hi=S.hisa;
+  const hlHdr=['#','Member','Referrals (×'+hi.referral+')','90-day Loyalty (×'+hi.loyalty90+')','Supplier (×'+hi.supplierRecruited+')','Complaint (×'+hi.complaintResolved+')','Other','TOTAL HISA','Status'];
+  const hlRows=(S.members||[]).map((m,i)=>{
+    const e=(S.hisaLedger||[]).find(h=>h.name===m.name)||{referral:0,loyalty90:0,supplier:0,complaint:0,other:0};
+    const tot=hisaTotal(m.name);
+    return [i+1,m.name,e.referral||0,e.loyalty90||0,e.supplier||0,e.complaint||0,e.other||0,tot,tot>=hi.threshold?'Co-Owner':'Member'];
+  });
+  XLSX.utils.book_append_sheet(wb2,XLSX.utils.aoa_to_sheet([hlHdr,...hlRows]),'Hisa Ledger');
+
+  // Dividend
+  const coOwners=(S.members||[]).filter(m=>hisaTotal(m.name)>=hi.threshold);
+  const memberVols={};(S.orders||[]).forEach(o=>{memberVols[o.member]=(memberVols[o.member]||0)+o.total;});
+  const totalVol=coOwners.reduce((a,m)=>a+(memberVols[m.name]||0),0)||1;
+  const annPool=Math.round(ns*52*S.finance.dividendPool/100);
+  const divHdr=['#','Co-Owner','Hisa','Annual Purchase Vol (Ksh)','Share %','Dividend (Ksh)'];
+  const divRows=coOwners.map((m,i)=>{const vol=memberVols[m.name]||0;const share=vol/totalVol;return [i+1,m.name,hisaTotal(m.name),Math.round(vol),(share*100).toFixed(1)+'%',Math.round(annPool*share)];});
+  XLSX.utils.book_append_sheet(wb2,XLSX.utils.aoa_to_sheet([[`Annual Dividend Pool: Ksh ${fmt(annPool)}`],[],divHdr,...divRows]),'Dividend Calc');
+
+  // Network Nodes
+  const ndHdr=['#','Estate','Location','Launch Date','Weekly GMV (Ksh)','Network Fee (Ksh)','Status'];
+  const ndRows=[[1,S.estate.name,S.estate.location,'HOME NODE',S.finance.weeklyGMV,0,'Active'],...(S.nodes||[]).map((n,i)=>[i+2,n.name,n.location||'',n.launched||'',n.gmv||0,Math.round((n.gmv||0)*S.finance.networkFee/100),n.status])];
+  XLSX.utils.book_append_sheet(wb2,XLSX.utils.aoa_to_sheet([ndHdr,...ndRows]),'Network Nodes');
+
+  // Survey results
+  const svHdr=['Household Size','Budget','Gas','Items','Other Requests','Date'];
+  const svRows=surveys.map(s=>[s.size,s.budget,s.gas,s.items.join(', '),s.other,new Date(s.ts).toLocaleDateString()]);
+  XLSX.utils.book_append_sheet(wb2,XLSX.utils.aoa_to_sheet([svHdr,...svRows]),'Survey Responses');
+
+  // Sign-ups
+  const suHdr=['Name','Phone','Role','Note','Date'];
+  const suRows=signups.map(s=>[s.name,s.phone,s.role,s.note,new Date(s.ts).toLocaleDateString()]);
+  XLSX.utils.book_append_sheet(wb2,XLSX.utils.aoa_to_sheet([suHdr,...suRows]),'Stakeholder Signups');
+
+  XLSX.writeFile(wb2,`MtaaMart_Workbook_${new Date().toISOString().split('T')[0]}.xlsx`);
+  toast('Excel workbook downloaded — all 10 sheets');
+}
+
+function dl(filename,content){
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([content],{type:'text/plain'}));
   a.download=filename;a.click();
 }
 
 function clearAllData(){
-  if(!confirm('This will permanently delete all survey responses and sign-ups. Are you sure?'))return;
-  surveys=[];signups=[];
-  save('mm_surveys',surveys);save('mm_signups',signups);
+  if(!confirm('This permanently deletes all survey responses and sign-ups. Are you sure?'))return;
+  surveys=[];signups=[];sv('mm_sv',surveys);sv('mm_su',signups);
   renderResults();toast('All data cleared');
 }
 
-// ══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // ADMIN
-// ══════════════════════════════════════════════════════════
-function openAdmin(){goTo('admin');}
-
+// ═══════════════════════════════════════════════════════
 function checkPin(){
-  const pin=document.getElementById('pin-input').value;
-  if(pin===S.pin){adminUnlocked=true;showAdminPanel();}
-  else{toast('Incorrect PIN');document.getElementById('pin-input').value='';}
+  if(document.getElementById('pin-in').value===S.pin){adminOk=true;showAdminPanel();}
+  else{toast('Incorrect PIN');document.getElementById('pin-in').value='';}
 }
 
 function showAdminPanel(){
-  document.getElementById('admin-lock').style.display='none';
-  document.getElementById('admin-panel').style.display='block';
-  renderAdminPanel();
+  document.getElementById('adm-lock').style.display='none';
+  document.getElementById('adm-panel').style.display='block';
+  renderAdmin();
 }
 
 function lockAdmin(){
-  adminUnlocked=false;
-  document.getElementById('admin-panel').style.display='none';
-  document.getElementById('admin-lock').style.display='block';
-  document.getElementById('pin-input').value='';
+  adminOk=false;
+  document.getElementById('adm-panel').style.display='none';
+  document.getElementById('adm-lock').style.display='block';
+  document.getElementById('pin-in').value='';
 }
 
-function renderAdminPanel(){
-  if(!adminUnlocked)return;
-  // Estate fields
-  const eFields=[
-    ['Estate name','name','text'],['Location / sub-county','location','text'],
-    ['RA Chairman','chairman','text'],['Secretary','secretary','text'],['Treasurer','treasurer','text'],
-    ['M-Pesa Paybill/Till','paybill','text'],['Total households','households','number'],
-    ['Delivery day','deliveryDay','text'],['Supplier name','supplier','text']
-  ];
-  document.getElementById('admin-estate-fields').innerHTML=eFields.map(([label,key,type])=>`
-    <div class="setting-row">
-      <span class="setting-label">${label}</span>
-      <div class="setting-val" style="width:160px">
-        <input type="${type}" id="ef-${key}" value="${S.estate[key]}" style="width:100%">
-      </div>
-    </div>`).join('');
+function renderAdmin(){
+  if(!adminOk) return;
 
-  // Hisa fields
-  const hFields=[
-    ['Hisa per referral','referral'],['Hisa per 90-day loyalty','loyalty90'],
-    ['Hisa per supplier recruited','supplierRecruited'],['Hisa per complaint resolved','complaintResolved'],
-    ['Threshold for Co-Owner status','threshold'],['Max Hisa per member','maxPerMember']
-  ];
-  document.getElementById('admin-hisa-fields').innerHTML=hFields.map(([label,key])=>`
-    <div class="setting-row">
-      <span class="setting-label">${label}</span>
-      <div class="setting-val"><input type="number" id="hf-${key}" value="${S.hisa[key]}" min="0" style="width:70px;text-align:right"></div>
-    </div>`).join('');
+  // Estate
+  const eFs=[['Estate name','name'],['Location / sub-county','location'],['RA Chairman','chairman'],
+    ['Secretary','secretary'],['Treasurer','treasurer'],['M-Pesa Paybill/Till','paybill'],
+    ['Total households','households'],['Delivery day','deliveryDay'],['Supplier name','supplier']];
+  document.getElementById('adm-estate').innerHTML=eFs.map(([l,k])=>`
+    <div class="lr"><span class="muted" style="flex:0 0 160px;font-size:12px">${l}</span>
+    <input type="${k==='households'?'number':'text'}" id="ef-${k}" value="${S.estate[k]||''}" style="flex:1;font-size:13px"></div>`).join('');
 
-  // Finance fields
-  const fFields=[
-    ['Bulk discount from retail (%)','bulkDiscount'],['Member saving passed through (%)','memberSaving'],
-    ['Mart gross margin kept (%)','martMargin'],['Ops cost reserve (% of margin)','opsCostReserve'],
-    ['Network fee per node (% GMV)','networkFee'],['Dividend pool (% of surplus)','dividendPool'],
-    ['Weekly GMV estimate (Ksh)','weeklyGMV']
-  ];
-  document.getElementById('admin-finance-fields').innerHTML=fFields.map(([label,key])=>`
-    <div class="setting-row">
-      <span class="setting-label">${label}</span>
-      <div class="setting-val"><input type="number" id="ff-${key}" value="${S.finance[key]}" min="0" style="width:90px;text-align:right"></div>
-    </div>`).join('');
+  // Hisa
+  const hFs=[['Hisa per referral','referral'],['Hisa per 90-day loyalty','loyalty90'],['Hisa per supplier','supplierRecruited'],['Hisa per complaint resolved','complaintResolved'],['Co-Owner threshold','threshold'],['Max Hisa per member','maxPerMember']];
+  document.getElementById('adm-hisa').innerHTML=hFs.map(([l,k])=>`
+    <div class="lr"><span class="muted" style="flex:1;font-size:12px">${l}</span>
+    <input type="number" id="hf-${k}" value="${S.hisa[k]||0}" min="0" style="width:70px;text-align:right"></div>`).join('');
 
-  // Boda fields
-  const bFields=[
-    ['Fee per delivery drop (Ksh)','feePerDrop'],['Bonus delivery threshold','bonusThreshold'],
-    ['Bonus amount (Ksh)','bonusAmount'],['Days until Hisa awarded','hisaAfterDays'],['Hisa units earned','hisaEarned']
-  ];
-  document.getElementById('admin-boda-fields').innerHTML=bFields.map(([label,key])=>`
-    <div class="setting-row">
-      <span class="setting-label">${label}</span>
-      <div class="setting-val"><input type="number" id="bf-${key}" value="${S.boda[key]}" min="0" style="width:80px;text-align:right"></div>
-    </div>`).join('');
+  // Finance
+  const fFs=[['Bulk discount from retail (%)','bulkDiscount'],['Member saving passed through (%)','memberSaving'],['Mart gross margin kept (%)','martMargin'],['Ops cost reserve (% of margin)','opsCostReserve'],['Network fee per node (% GMV)','networkFee'],['Dividend pool (% of surplus)','dividendPool'],['Weekly GMV estimate (Ksh)','weeklyGMV']];
+  document.getElementById('adm-fin').innerHTML=fFs.map(([l,k])=>`
+    <div class="lr"><span class="muted" style="flex:1;font-size:12px">${l}</span>
+    <input type="number" id="ff-${k}" value="${S.finance[k]||0}" min="0" style="width:90px;text-align:right"></div>`).join('');
+
+  // Boda
+  const bFs=[['Fee per delivery drop (Ksh)','feePerDrop'],['Bonus delivery threshold','bonusThreshold'],['Bonus amount (Ksh)','bonusAmount'],['Days until Hisa awarded','hisaAfterDays'],['Hisa units earned by rider','hisaEarned']];
+  document.getElementById('adm-boda').innerHTML=bFs.map(([l,k])=>`
+    <div class="lr"><span class="muted" style="flex:1;font-size:12px">${l}</span>
+    <input type="number" id="bf-${k}" value="${S.boda[k]||0}" min="0" style="width:80px;text-align:right"></div>`).join('');
 
   // Products
-  renderAdminProducts();
+  document.getElementById('adm-prods').innerHTML=S.products.map((p,i)=>`<tr>
+    <td><input value="${p.name}" id="pn${i}" style="font-size:11px;padding:3px 5px;min-width:120px"></td>
+    <td><input value="${p.unit}" id="pu${i}" style="font-size:11px;padding:3px 5px;width:55px"></td>
+    <td><input type="number" value="${p.retail}" id="pr${i}" style="font-size:11px;padding:3px 5px;width:65px;text-align:right"></td>
+    <td><input type="number" value="${p.bulk}" id="pb${i}" style="font-size:11px;padding:3px 5px;width:65px;text-align:right"></td>
+    <td><button onclick="rmProd(${i})" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:14px">✕</button></td>
+  </tr>`).join('');
 
   // Services
-  renderAdminServices();
+  document.getElementById('adm-svcs').innerHTML=S.services.map((s,i)=>`
+    <div class="flex"><input type="text" value="${s}" id="sv${i}" style="flex:1;font-size:13px">
+    <button onclick="rmSvc(${i})" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:16px;margin-left:.3rem">✕</button></div>`).join('');
 }
 
-function renderAdminProducts(){
-  document.getElementById('admin-products').innerHTML=S.products.map((p,i)=>`
-    <div class="prod-row" id="pr-${i}">
-      <input type="text" value="${p.name}" id="pn-${i}" placeholder="Product name" style="font-size:11px;padding:4px 6px">
-      <input type="text" value="${p.unit}" id="pu-${i}" placeholder="Unit" style="font-size:11px;padding:4px 6px">
-      <input type="number" value="${p.retail}" id="pr-r-${i}" min="0" style="font-size:11px;padding:4px 6px">
-      <input type="number" value="${p.bulk}" id="pr-b-${i}" min="0" style="font-size:11px;padding:4px 6px">
-      <button onclick="removeProduct(${i})" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:14px">✕</button>
-    </div>`).join('');
-}
-
-function renderAdminServices(){
-  document.getElementById('admin-services').innerHTML=S.services.map((s,i)=>`
-    <div class="flex">
-      <input type="text" value="${s}" id="svc-${i}" style="flex:1;font-size:13px">
-      <button onclick="removeService(${i})" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:16px">✕</button>
-    </div>`).join('');
-}
-
-function addProduct(){
-  S.products.push({name:'New product',unit:'1kg',retail:100,bulk:85});
-  renderAdminProducts();
-}
-
-function removeProduct(i){
-  S.products.splice(i,1);renderAdminProducts();
-}
-
-function addService(){
-  S.services.push('New service');renderAdminServices();
-}
-
-function removeService(i){
-  S.services.splice(i,1);renderAdminServices();
-}
+function addProd(){S.products.push({name:'New product',unit:'1kg',retail:100,bulk:85});renderAdmin();}
+function rmProd(i){S.products.splice(i,1);renderAdmin();}
+function addSvc(){S.services.push('New service');renderAdmin();}
+function rmSvc(i){S.services.splice(i,1);renderAdmin();}
 
 function changePin(){
   const np=document.getElementById('new-pin').value.trim();
   if(!np||np.length<4){toast('PIN must be at least 4 characters');return;}
-  S.pin=np;save('mm_settings',S);toast('PIN updated');document.getElementById('new-pin').value='';
+  S.pin=np;sv('mm_S',S);toast('PIN updated');document.getElementById('new-pin').value='';
 }
 
 function saveSettings(){
-  // Read estate
-  const eFields=['name','location','chairman','secretary','treasurer','paybill','households','deliveryDay','supplier'];
-  eFields.forEach(k=>{const el=document.getElementById('ef-'+k);if(el)S.estate[k]=el.type==='number'?+el.value:el.value;});
-  // Read hisa
-  const hFields=['referral','loyalty90','supplierRecruited','complaintResolved','threshold','maxPerMember'];
-  hFields.forEach(k=>{const el=document.getElementById('hf-'+k);if(el)S.hisa[k]=+el.value;});
-  // Read finance
-  const fFields=['bulkDiscount','memberSaving','martMargin','opsCostReserve','networkFee','dividendPool','weeklyGMV'];
-  fFields.forEach(k=>{const el=document.getElementById('ff-'+k);if(el)S.finance[k]=+el.value;});
-  // Read boda
-  const bFields=['feePerDrop','bonusThreshold','bonusAmount','hisaAfterDays','hisaEarned'];
-  bFields.forEach(k=>{const el=document.getElementById('bf-'+k);if(el)S.boda[k]=+el.value;});
-  // Read products
+  // Estate
+  ['name','location','chairman','secretary','treasurer','paybill','deliveryDay','supplier'].forEach(k=>{
+    const e=document.getElementById('ef-'+k);if(e)S.estate[k]=e.value;
+  });
+  const hh=document.getElementById('ef-households');if(hh)S.estate.households=+hh.value||200;
+  // Hisa
+  ['referral','loyalty90','supplierRecruited','complaintResolved','threshold','maxPerMember'].forEach(k=>{
+    const e=document.getElementById('hf-'+k);if(e)S.hisa[k]=+e.value;
+  });
+  // Finance
+  ['bulkDiscount','memberSaving','martMargin','opsCostReserve','networkFee','dividendPool','weeklyGMV'].forEach(k=>{
+    const e=document.getElementById('ff-'+k);if(e)S.finance[k]=+e.value;
+  });
+  // Boda
+  ['feePerDrop','bonusThreshold','bonusAmount','hisaAfterDays','hisaEarned'].forEach(k=>{
+    const e=document.getElementById('bf-'+k);if(e)S.boda[k]=+e.value;
+  });
+  // Products
   S.products=S.products.map((_,i)=>({
-    name:document.getElementById('pn-'+i)?.value||'',
-    unit:document.getElementById('pu-'+i)?.value||'',
-    retail:+(document.getElementById('pr-r-'+i)?.value||0),
-    bulk:+(document.getElementById('pr-b-'+i)?.value||0)
+    name:document.getElementById('pn'+i)?.value||'',
+    unit:document.getElementById('pu'+i)?.value||'',
+    retail:+document.getElementById('pr'+i)?.value||0,
+    bulk:+document.getElementById('pb'+i)?.value||0
   })).filter(p=>p.name);
-  // Read services
-  S.services=S.services.map((_,i)=>document.getElementById('svc-'+i)?.value||'').filter(Boolean);
-  save('mm_settings',S);
-  toast('Settings saved — infographic updated');
+  // Services
+  S.services=S.services.map((_,i)=>document.getElementById('sv'+i)?.value||'').filter(Boolean);
+  sv('mm_S',S);
   buildSurveyLists();
+  toast('✅ Settings saved — all tabs updated');
 }
 
-// ══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // PWA INSTALL
-// ══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 let deferredPrompt=null;
 window.addEventListener('beforeinstallprompt',e=>{
   e.preventDefault();deferredPrompt=e;
-  document.getElementById('install-bar').classList.remove('hidden');
+  document.getElementById('ibar').classList.add('show');
 });
-document.getElementById('install-btn').addEventListener('click',async()=>{
+document.getElementById('ibtn').addEventListener('click',async()=>{
   if(!deferredPrompt)return;
   deferredPrompt.prompt();
   const{outcome}=await deferredPrompt.userChoice;
-  if(outcome==='accepted'){document.getElementById('install-bar').classList.add('hidden');}
+  if(outcome==='accepted') document.getElementById('ibar').classList.remove('show');
   deferredPrompt=null;
 });
+if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
 
-// ══════════════════════════════════════════════════════════
-// UTIL
-// ══════════════════════════════════════════════════════════
-function fmt(n){return Number(n).toLocaleString('en-KE');}
-
-// ══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // INIT
-// ══════════════════════════════════════════════════════════
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js').catch(()=>{});
-}
-renderInfographic();
+// ═══════════════════════════════════════════════════════
+renderIG();
+renderHisa();
+renderManuals();
 buildSurveyLists();
 buildSignupCommits();
+renderWbNav();
 </script>
 </body>
 </html>
